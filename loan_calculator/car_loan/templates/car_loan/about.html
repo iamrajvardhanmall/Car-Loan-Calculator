@@ -1,0 +1,184 @@
+{% extends 'car_loan/base.html' %}
+{% load static %}
+
+{% block title %}About Us - AI Car Loan Calculator{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'car_loan/css/about.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="about-page">
+    <!-- Hero Section -->
+    {% comment %} <section class="hero-section text-center py-5 mb-5">
+        <div class="hero-content">
+            <span class="badge bg-primary-soft mb-3">About Us</span>
+            <h1 class="display-4 mb-4 fw-bold">Revolutionizing Car Financing with AI</h1>
+            <p class="lead text-muted mx-auto">We're combining artificial intelligence with
+                financial expertise to make car loan decisions simpler and smarter.</p>
+            <div class="stats-row mt-5">
+                <div class="stat-item">
+                    <h3 class="stat-number">10K+</h3>
+                    <p class="stat-label">Happy Users</p>
+                </div>
+                <div class="stat-item">
+                    <h3 class="stat-number">95%</h3>
+                    <p class="stat-label">Accuracy Rate</p>
+                </div>
+                <div class="stat-item">
+                    <h3 class="stat-number">24/7</h3>
+                    <p class="stat-label">AI Support</p>
+                </div>
+            </div>
+        </div>
+    </section> {% endcomment %}
+
+    <!-- Mission Section -->
+    <section class="mission-section mb-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h2 class="mb-4">Our Mission</h2>
+                <p class="lead">We're on a mission to make car financing decisions easier and more transparent for
+                    everyone.</p>
+                <p>Using advanced AI technology, we provide accurate loan calculations and personalized recommendations
+                    to help you make informed decisions about your car purchase.</p>
+            </div>
+            <div class="col-lg-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h3 class="h5 mb-4">Why Choose Us?</h3>
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Accurate AI-powered calculations
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Personalized recommendations
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                User-friendly interface
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Secure data handling
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section mb-5">
+        <h2 class="text-center mb-5">What We Offer</h2>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-calculator display-4 text-primary mb-3"></i>
+                        <h3 class="h5">Loan Calculator</h3>
+                        <p class="text-muted">Advanced calculator with AI-powered insights for accurate loan estimates.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-graph-up display-4 text-primary mb-3"></i>
+                        <h3 class="h5">Market Analysis</h3>
+                        <p class="text-muted">Real-time market data and trend analysis for better decisions.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-shield-check display-4 text-primary mb-3"></i>
+                        <h3 class="h5">Secure Platform</h3>
+                        <p class="text-muted">Your data is protected with industry-standard security measures.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-headset display-4 text-primary mb-3"></i>
+                        <h3 class="h5">Expert Support</h3>
+                        <p class="text-muted">Get assistance from our knowledgeable support team.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section mb-5">
+        <h2 class="text-center mb-5">Founder & CEO</h2>
+        <div class="container">
+            <div class="row justify-content-center g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="rounded-circle overflow-hidden mb-3 mx-auto">
+                                <img src="{% static 'car_loan/images/Raj.jpg' %}" alt="Rajvardhan Mall"
+                                    class="img-fluid">
+                            </div>
+                            <h3 class="h5">Rajvardhan Mall</h3>
+                            <p class="text-muted">Lead Developer, Founder & CEO</p>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section mb-5">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-lg-6 mb-4 mb-lg-0">
+                        <h2 class="mb-4">Get in Touch</h2>
+                        <p>Have questions about our car loan calculator? We're here to help!</p>
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <i class="bi bi-envelope me-2"></i>
+                                rajvardhanmall@gmail.com
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-telephone me-2"></i>
+                                +91 8423510751
+                            </li>
+
+                        </ul>
+                    </div>
+                    <div class="col-lg-6">
+                        <form method="post" action="{% url 'car_loan:about' %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Message</label>
+                                <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

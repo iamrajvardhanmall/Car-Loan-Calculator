@@ -1,0 +1,91 @@
+{% extends "car_loan/base.html" %}
+{% load static %}
+
+{% block title %}Saved Calculations{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'car_loan/css/saved_calculations.css' %}">
+{% endblock %}
+
+{% block footer_css %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="saved-calculations">
+    <header>
+        <h1>Saved Calculations</h1>
+        <p>View and manage your saved car loan calculations</p>
+    </header>
+
+    {% if calculations %}
+    <div class="calculations-grid">
+        {% for calc in calculations %}
+        <div class="calculation-card" data-calculation-id="{{ calc.id }}">
+            <div class="calculation-header">
+                <div class="calculation-date">{{ calc.created_at|date:"F j, Y, g:i a" }}</div>
+            </div>
+            
+            <div class="calculation-detail">
+                <span class="detail-label">Vehicle Price:</span>
+                <span class="detail-value">₹{{ calc.vehicle_price|floatformat:2 }}</span>
+            </div>
+            
+            <div class="calculation-detail">
+                <span class="detail-label">Down Payment:</span>
+                <span class="detail-value">₹{{ calc.down_payment|floatformat:2 }}</span>
+            </div>
+            
+            <div class="calculation-detail">
+                <span class="detail-label">Loan Term:</span>
+                <span class="detail-value">{{ calc.loan_term }} months</span>
+            </div>
+            
+            <div class="calculation-detail">
+                <span class="detail-label">Interest Rate:</span>
+                <span class="detail-value">{{ calc.interest_rate }}%</span>
+            </div>
+
+            <div class="highlight">
+                <div class="calculation-detail highlight-detail">
+                    <span class="detail-label">Monthly Payment:</span>
+                    <span class="detail-value highlight-value">₹{{ calc.monthly_payment|floatformat:2 }}</span>
+                </div>
+            </div>
+            
+
+            
+            <div class="action-buttons">
+                <button class="action-btn view-btn" onclick="window.location.href='{% url 'car_loan:result' %}?id={{ calc.id }}'">
+                    <i class="bi bi-eye"></i> View Details
+                </button>
+                <button class="action-btn delete-btn delete-calculation" data-id="{{ calc.id }}">
+                    <i class="bi bi-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-calculations">
+        <h3>No saved calculations yet</h3>
+        <p>Your saved calculations will appear here once you save them from the calculator.</p>
+        <a href="{% url 'car_loan:calculator' %}" class="btn btn-primary mt-3">
+            <i class="bi bi-calculator me-2"></i>Go to Calculator
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<script src="{% static 'car_loan/js/saved_calculations.js' %}?v=2" defer></script>
+<script>
+// Initialize Django URLs and CSRF token for saved_calculations.js
+window.deleteCalculationUrl = "{% url 'car_loan:delete_calculation' 0 %}";
+window.csrfToken = "{{ csrf_token }}";
+window.savedCalculationsUrl = "{% url 'car_loan:saved_calculations' %}";
+</script>
+{% endblock %}
+
+{% block extra_js %}
+{% endblock %}

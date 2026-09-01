@@ -1,0 +1,317 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-powered car loan calculator with personalized recommendations">
+    <meta name="keywords" content="car loan, auto loan, calculator, finance, AI">
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style">
+    <link rel="preload" href="{% static 'car_loan/css/base.css' %}" as="style">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <title>{% block title %}Car Loan Calculator{% endblock %}</title>
+
+    <!-- Bootstrap CSS with fallback -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'car_loan/css/base.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'car_loan/images/favicon.ico' %}" type="image/x-icon">
+
+    {% block extra_css %}
+    {% endblock %}
+
+    {% block footer_css %}
+    {% endblock %}
+</head>
+
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXX" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <header>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'car_loan:calculator' %}">
+                    <img src="{% static 'car_loan/images/Car logo.jpeg' %}" alt="Car Loan Calculator Logo" width="50"
+                        height="50" class="d-inline-block align-text-top">
+                    Auto Concept
+                </a>
+
+                <div class="d-flex align-items-center order-lg-2">
+                    <div class="nav-actions d-none d-lg-flex me-3">
+                        <button class="notification-badge" id="notificationBadge" title="Notifications">
+                            <i class="bi bi-bell"></i>
+                        </button>
+                    </div>
+
+                    {% if user.is_authenticated %}
+                    <div class="dropdown d-none d-lg-block">
+                        <button class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i>
+                            <span>{{ user.username }}</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="{% url 'car_loan:saved_calculations' %}">
+                                    <i class="bi bi-folder"></i>
+                                    <span>My Calculations</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#settings">
+                                    <i class="bi bi-gear"></i>
+                                    <span>Settings</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'password_change' %}">
+                                    <i class="bi bi-key"></i>
+                                    <span>Change Password</span>
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <form method="post" action="{% url 'logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="bi bi-box-arrow-right"></i>
+                                        <span>Sign Out</span>
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    {% else %}
+                    <div class="auth-buttons d-none d-lg-flex">
+                        <a href="{% url 'login' %}" class="btn btn-login">
+                            <i class="bi bi-box-arrow-in-right"></i>
+                            <span>Login</span>
+                        </a>
+                        <a href="{% url 'car_loan:signup' %}" class="btn btn-signup">
+                            <i class="bi bi-person-plus"></i>
+                            <span>Sign Up</span>
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarNav">
+                        <i class="bi bi-list"></i>
+                    </button>
+                </div>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.view_name == 'car_loan:calculator' %}active{% endif %}"
+                                href="{% url 'car_loan:calculator' %}">
+                                <i class="bi bi-house"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.view_name == 'car_loan:saved_calculations' %}active{% endif %}"
+                                href="{% url 'car_loan:saved_calculations' %}">
+                                <i class="bi bi-bookmark"></i>
+                                <span>Saved</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.view_name == 'car_loan:compare_loans' %}active{% endif %}"
+                                href="{% url 'car_loan:compare_loans' %}">
+                                <i class="bi bi-bar-chart"></i>
+                                <span>Compare Loans</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'value_estimator' %}active{% endif %}"
+                                href="{% url 'car_loan:value_estimator' %}">
+                                <i class="bi bi-calculator"></i>
+                                <span>Value Estimator</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.view_name == 'car_loan:about' %}active{% endif %}"
+                                href="{% url 'car_loan:about' %}">
+                                <i class="bi bi-info-circle"></i>
+                                <span>About</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Mobile Menu -->
+                    <div class="d-lg-none mt-3">
+                        <div class="d-flex justify-content-center gap-3 mb-3">
+                            <button class="notification-badge" id="notificationBadgeMobile">
+                                <i class="bi bi-bell"></i>
+                            </button>
+                        </div>
+
+                        {% if user.is_authenticated %}
+                        <div class="mobile-user-menu">
+                            <a class="nav-link mb-2" href="{% url 'car_loan:saved_calculations' %}">
+                                <i class="bi bi-folder"></i>
+                                <span>My Calculations</span>
+                            </a>
+                            <a class="nav-link mb-2" href="#settings">
+                                <i class="bi bi-gear"></i>
+                                <span>Settings</span>
+                            </a>
+                            <a class="nav-link mb-2" href="{% url 'password_change' %}">
+                                <i class="bi bi-key"></i>
+                                <span>Change Password</span>
+                            </a>
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="nav-link text-danger w-100">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                    <span>Sign Out</span>
+                                </button>
+                            </form>
+                        </div>
+                        {% else %}
+                        <div class="auth-buttons">
+                            <a href="{% url 'login' %}" class="btn btn-login">
+                                <i class="bi bi-box-arrow-in-right"></i>
+                                <span>Login</span>
+                            </a>
+                            <a href="{% url 'car_loan:signup' %}" class="btn btn-signup">
+                                <i class="bi bi-person-plus"></i>
+                                <span>Sign Up</span>
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main class="container mt-4">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-wave"></div>
+        <div class="container footer-content">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5>About Us</h5>
+                    <p class="text-white-50">
+                        <strong>AI Car Loan Calculator helps you make informed decisions about your car financing
+                            with advanced AI-powered calculations and personalized recommendations.</strong>
+                    </p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links">
+                        <li>
+                            <a href="{% url 'car_loan:calculator' %}">
+                                <i class="bi bi-calculator"></i>Loan Calculator
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'car_loan:about' %}">
+                                <i class="bi bi-info-circle"></i>About Us
+                            </a>
+                        </li>
+                        {% if user.is_authenticated %}
+                        <li>
+                            <a href="{% url 'car_loan:saved_calculations' %}">
+                                <i class="bi bi-bookmark"></i>Saved Calculations
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <a href="#">
+                                <i class="bi bi-shield-check"></i>Privacy Policy
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="bi bi-file-text"></i>Terms of Service
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Contact Us</h5>
+                    <ul class="footer-links">
+                        <li>
+                            <a href="mailto:support@aicarloancalculator.com">
+                                <i class="bi bi-envelope"></i>rajvardhanmall@gmail.com
+                            </a>
+                        </li>
+                        <li>
+                            <a href="tel:1-800-CAR-LOAN">
+                                <i class="bi bi-telephone"></i>+91 8423510751
+                            </a>
+                        </li>
+                    </ul>
+                    <h5 class="mt-4">Follow Us</h5>
+                    <div class="social-links">
+                        <a href="#" title="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" title="Twitter"><i class="bi bi-twitter"></i></a>
+                        <a href="https://www.linkedin.com/in/rajvardhan-mall-958bb8281/" title="LinkedIn"><i
+                                class="bi bi-linkedin"></i></a>
+                        <a href="https://www.instagram.com/iamrajvardhanmall06?igsh=MWVqNjh4bXI4OG1jdw=="
+                            title="Instagram"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; {% now "Y" %} AI Car Loan Calculator. All rights reserved.</p>
+                <p class="small text-white-50">Rates and calculations are estimates only. Actual terms may vary.</p>
+            </div>
+        </div>
+    </footer>
+
+
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+
+    <!-- Main JS -->
+    <script src="{% static 'car_loan/js/calculator.js' %}?v=2" defer></script>
+
+    <!-- Include Notification Script -->
+    <script src="{% static 'car_loan/js/notification.js' %}" defer></script>
+    
+    <!-- Base JavaScript with CSRF token -->
+    <script src="{% static 'car_loan/js/base.js' %}" defer></script>
+    <script>
+        // Initialize CSRF token for base.js
+        const csrfToken = "{{ csrf_token }}";
+        window.csrfToken = csrfToken;
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

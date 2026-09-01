@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AI Car Loan Calculator</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    {% load static %}
+        <link rel="stylesheet" href="{% static 'car_loan/css/registration_login.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>Welcome Back!</h1>
+                <p>Sign in to access your car loan calculator</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="id_username" class="form-label">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-person"></i>
+                        </span>
+                        <input type="text" name="username" id="id_username" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-lock"></i>
+                        </span>
+                        <input type="password" name="password" id="id_password" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-check">
+                    <div>
+                        <input type="checkbox" name="remember" id="remember" class="form-check-input">
+                        <label class="form-check-label" for="remember">Remember me</label>
+                    </div>
+                    <a href="{% url 'password_reset' %}" class="forgot-password">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                </button>
+
+                <div class="divider">
+                    <span class="bg-white px-2">Or</span>
+                </div>
+
+                <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.GET.next|default:'/calculator/' }}" class="btn btn-google">
+                    <img src="https://www.google.com/favicon.ico" alt="Google" width="20" height="20">
+                    Continue with Google
+                </a>
+
+                <div class="signup-link">
+                    Don't have an account? <a href="{% url 'car_loan:signup' %}">Sign Up</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% load static %}
+    <script src="{% static 'car_loan/js/google_auth.js' %}" defer></script>
+</body>
+</html>

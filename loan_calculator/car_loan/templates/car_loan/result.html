@@ -1,0 +1,174 @@
+{% extends "car_loan/base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}Loan Calculation Results{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'car_loan/css/result.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="result-container">
+    <div class="result-card">
+        <div class="result-header">
+            <h1>Your Loan Calculation</h1>
+            <p>Generated on {{ request.user.date_joined|date:"F j, Y" }}</p>
+        </div>
+
+        <div class="financial-summary">
+            <h2>Financial Summary</h2>
+
+            <!-- Debug Information -->
+            <div class="debug-info">
+                <strong>Debug Info:</strong><br>
+                Raw values - Vehicle: {{ vehicle_price|default:"None" }}, Down: {{ down_payment|default:"None" }},
+                Loan: {{ loan_amount|default:"None" }}, Term: {{ loan_term|default:"None" }},
+                Rate: {{ final_interest_rate|default:"None" }}, Payment: {{ monthly_payment|default:"None" }}
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">Vehicle Price:</span>
+                <span class="summary-value">₹{{ vehicle_price|floatformat:2|default:"0.00" }}</span>
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">Down Payment:</span>
+                <span class="summary-value">₹{{ down_payment|floatformat:2|default:"0.00" }}</span>
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">Loan Amount:</span>
+                <span class="summary-value">₹{{ loan_amount|floatformat:2|default:"0.00" }}</span>
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">Loan Term:</span>
+                <span class="summary-value">{{ loan_term|default:"0" }} months</span>
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">Interest Rate:</span>
+                <span class="summary-value">{{ final_interest_rate|default:"0.00" }}%</span>
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">Monthly Payment:</span>
+                <span class="summary-value highlight-value">₹{{ monthly_payment|floatformat:2|default:"0.00" }}</span>
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">Total Interest:</span>
+                <span class="summary-value">₹{{ total_interest|floatformat:2|default:"0.00" }}</span>
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">Affordability:</span>
+                <span id="affordabilityIndicator" class="summary-value">
+                    {% if is_affordable %}
+                    <span class="text-success"><i class="bi bi-check-circle-fill"></i> Affordable</span>
+                    {% else %}
+                    <span class="text-danger"><i class="bi bi-exclamation-triangle-fill"></i> Not Affordable</span>
+                    <br>
+                    <small>Recommended Max Payment: ₹{{ recommended_max_payment|floatformat:2 }}</small>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <h2>Payment Breakdown</h2>
+            <div class="chart-container">
+                <canvas id="paymentChart"></canvas>
+            </div>
+        </div>
+
+        <div class="amortization-section">
+            <h2>Amortization Schedule</h2>
+            <div class="table-responsive">
+                <table class="payment-table">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Payment</th>
+                            <th>Principal</th>
+                            <th>Interest</th>
+                            <th>Remaining Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentSchedule">
+                        <!-- Payment schedule will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="additional-costs">
+            <h2 class="mb-4">Additional Costs</h2>
+
+            <div class="cost-row">
+                <span class="cost-label">Monthly Insurance:</span>
+                <span class="cost-value">₹{{ insurance_cost|floatformat:2 }}</span>
+            </div>
+
+            <div class="cost-row">
+                <span class="cost-label">Monthly Maintenance:</span>
+                <span class="cost-value">₹{{ maintenance_cost|floatformat:2 }}</span>
+            </div>
+
+            <div class="cost-row">
+                <span class="cost-label">Monthly Fuel:</span>
+                <span class="cost-value">₹{{ fuel_cost|floatformat:2 }}</span>
+            </div>
+
+            <div class="cost-row">
+                <span class="cost-label">Extended Warranty:</span>
+                <span class="cost-value">₹{{ extended_warranty|floatformat:2 }}</span>
+            </div>
+
+            <div class="cost-row">
+                <span class="cost-label">Total Monthly Cost:</span>
+                <span class="cost-value">₹{{ total_monthly_cost|floatformat:2 }}</span>
+            </div>
+
+            <div class="cost-row">
+                <span class="cost-label">Total Cost of Ownership:</span>
+                <span class="cost-value">₹{{ total_cost_of_ownership|floatformat:2 }}</span>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="{% url 'car_loan:calculator' %}" class="action-btn primary-btn">
+                <i class="bi bi-calculator me-2"></i>New Calculation
+            </a>
+            <button onclick="window.print()" class="action-btn secondary-btn">
+                <i class="bi bi-printer me-2"></i>Print Results
+            </button>
+            <a href="{% url 'car_loan:download_pdf' %}?{{ request.GET.urlencode }}" class="action-btn secondary-btn">
+                <i class="bi bi-download me-2"></i>Download PDF
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'car_loan/js/result.js' %}" defer></script>
+
+<!-- Hidden data elements for JavaScript -->
+<div id="loan-data" data-principal="{{ cost_breakdown.principal|default:0 }}"
+    data-interest="{{ cost_breakdown.interest|default:0 }}" data-insurance="{{ cost_breakdown.insurance|default:0 }}"
+    data-maintenance="{{ cost_breakdown.maintenance|default:0 }}" data-fuel="{{ cost_breakdown.fuel|default:0 }}"
+    data-warranty="{{ cost_breakdown.warranty|default:0 }}">
+</div>
+
+<div id="loan-details" data-loan-amount="{{ loan_amount|default:0 }}"
+    data-interest-rate="{{ final_interest_rate|default:0 }}" data-monthly-payment="{{ monthly_payment|default:0 }}"
+    data-loan-term="{{ loan_term|default:0 }}" data-is-affordable="{{ is_payment_affordable|lower }}"
+    data-recommended-max-payment="{{ recommended_max_payment|default:0 }}">
+</div>
+
+
+{% endblock %}

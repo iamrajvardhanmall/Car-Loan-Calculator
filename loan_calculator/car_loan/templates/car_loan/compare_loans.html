@@ -1,0 +1,89 @@
+{% extends 'car_loan/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Loan Comparison Tool</h2>
+    
+    <div class="row">
+        <!-- Loan Input Form -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Add New Loan</h3>
+                    <form id="comparison-form" class="mt-3">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Comparison Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="vehicle_price" class="form-label">Vehicle Price (₹)</label>
+                            <input type="number" class="form-control" id="vehicle_price" name="vehicle_price" min="0" step="0.01" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="down_payment" class="form-label">Down Payment (₹)</label>
+                            <input type="number" class="form-control" id="down_payment" name="down_payment" min="0" step="0.01" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loan_term" class="form-label">Loan Term (months)</label>
+                            <input type="number" class="form-control" id="loan_term" name="loan_term" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="interest_rate" class="form-label">Interest Rate (%)</label>
+                            <input type="number" class="form-control" id="interest_rate" name="interest_rate" min="0" step="0.01" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add to Comparison</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Loan Comparisons</h3>
+                    <div class="table-responsive">
+                        <table class="table" id="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Monthly Payment</th>
+                                    <th>Total Cost</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for comparison in comparisons %}
+                                <tr>
+                                    <td>{{ comparison.name }}</td>
+                                    <td>₹{{ comparison.monthly_payment|floatformat:2 }}</td>
+                                        <td>₹{{ comparison.total_cost|floatformat:2 }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger delete-comparison" data-id="{{ comparison.id }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'car_loan/js/compare_loans.js' %}" defer></script>
+<script>
+// Initialize Django URLs and CSRF token for compare_loans.js
+window.compareLoansUrl = "{% url 'car_loan:compare_loans' %}";
+window.deleteComparisonUrlBase = "/delete-comparison/";
+window.csrfToken = "{{ csrf_token }}";
+</script>
+
+
+
+
+{% endblock %}

@@ -1,0 +1,234 @@
+{% extends "car_loan/base.html" %}
+{% load static %}
+
+{% block title %}Car Loan Calculator{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'car_loan/css/calculator.css' %}">
+{% endblock %}
+
+{% block footer_css %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="calculator-container">
+    <header class="calculator-header">
+        <h1>Car Loan Calculator</h1>
+        <p>Calculate your monthly payments and total cost of ownership</p>
+    </header>
+    
+    <form method="get" action="{% url 'car_loan:result' %}" id="calculatorForm" class="calculator-form" novalidate>
+        {% csrf_token %}
+        
+        <div class="form-section">
+            <h2 class="form-section-title">
+                <i class="bi bi-car-front"></i>
+                Vehicle Information
+            </h2>
+        <div class="row">
+            <div class="col-md-6">
+                    <div class="mb-4">
+                    <label for="id_vehicle_price" class="form-label">Vehicle Price (₹)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">₹</span>
+                        <input type="number" class="form-control" id="id_vehicle_price" 
+                               name="vehicle_price" step="0.01" min="0" required
+                                   placeholder="Enter vehicle price"
+                                   value="{{ request.GET.vehicle_price|default_if_none:'' }}"
+                                   onchange="updateCalculationPreview()">
+                        </div>
+                </div>
+                
+                    <div class="mb-4">
+                    <label for="id_down_payment" class="form-label">Down Payment (₹)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">₹</span>
+                        <input type="number" class="form-control" id="id_down_payment" 
+                               name="down_payment" step="0.01" min="0" required
+                                   placeholder="Enter down payment"
+                                   value="{{ request.GET.down_payment|default_if_none:'' }}"
+                                   onchange="updateCalculationPreview()">
+                        </div>
+                </div>
+                
+                    <div class="mb-4">
+                    <label for="id_trade_in" class="form-label">Trade-In Value (₹)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">₹</span>
+                        <input type="number" class="form-control" id="id_trade_in" 
+                                   name="trade_in" step="0.01" min="0" value="0"
+                                   placeholder="Enter trade-in value"
+                                   onchange="updateCalculationPreview()">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                    <div class="mb-4">
+                    <label for="id_sales_tax" class="form-label">Sales Tax Rate (%)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">%</span>
+                        <input type="number" class="form-control" id="id_sales_tax" 
+                                   name="sales_tax" step="0.01" min="0" max="20" value="6.25"
+                                   placeholder="Enter sales tax rate">
+                    </div>
+                </div>
+                
+                    <div class="mb-4">
+                    <label for="id_doc_fee" class="form-label">Documentation Fee (₹)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">₹</span>
+                        <input type="number" class="form-control" id="id_doc_fee" 
+                                   name="doc_fee" step="0.01" min="0" value="300"
+                                   placeholder="Enter documentation fee">
+                    </div>
+                </div>
+                
+                    <div class="mb-4">
+                    <label for="id_registration_fee" class="form-label">Registration Fee (₹)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">₹</span>
+                        <input type="number" class="form-control" id="id_registration_fee" 
+                                   name="registration_fee" step="0.01" min="0" value="150"
+                                   placeholder="Enter registration fee">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h2 class="form-section-title">
+                <i class="bi bi-graph-up"></i>
+                Loan Terms
+            </h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="slider-container">
+                        <div class="slider-label">
+                            <label for="loanTermSlider" class="form-label">Loan Term</label>
+                            <span class="slider-value" id="loanTermValue">60 months</span>
+                        </div>
+                        <input type="range" class="form-range" id="loanTermSlider" 
+                               min="12" max="84" step="12" value="60">
+                    <input type="hidden" id="id_loan_term" name="loan_term" value="60">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="slider-container">
+                        <div class="slider-label">
+                            <label for="interestRateSlider" class="form-label">Interest Rate</label>
+                            <span class="slider-value" id="interestRateValue">5.0%</span>
+                        </div>
+                        <input type="range" class="form-range" id="interestRateSlider" 
+                               min="0" max="20" step="0.1" value="5.0">
+                    <input type="hidden" id="id_interest_rate" name="interest_rate" value="5.0">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="id_loan_fee" class="form-label">Loan Origination Fee (%)</label>
+                <div class="input-group">
+                    <span class="input-group-text">%</span>
+                    <input type="number" class="form-control" id="id_loan_fee" 
+                           name="loan_fee" step="0.01" min="0" max="5" value="1.0"
+                           placeholder="Enter loan origination fee">
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h2 class="form-section-title">
+                <i class="bi bi-cash-stack"></i>
+                Additional Costs
+            </h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label for="id_credit_score" class="form-label">Credit Score</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-graph-up"></i></span>
+                            <input type="number" class="form-control" id="id_credit_score" 
+                                   name="credit_score" min="300" max="850" step="1"
+                                   placeholder="Enter your credit score (300-850)">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="id_insurance_cost" class="form-label">Monthly Insurance Cost (₹)</label>
+                        <div class="input-group">
+                            <span class="input-group-text">₹</span>
+                            <input type="number" class="form-control" id="id_insurance_cost" 
+                                   name="insurance_cost" step="0.01" min="0"
+                                   placeholder="Enter monthly insurance cost">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label for="id_maintenance_cost" class="form-label">Monthly Maintenance Estimate (₹)</label>
+                        <div class="input-group">
+                            <span class="input-group-text">₹</span>
+                            <input type="number" class="form-control" id="id_maintenance_cost" 
+                                   name="maintenance_cost" step="0.01" min="0"
+                                   placeholder="Enter monthly maintenance cost">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="id_fuel_cost" class="form-label">Monthly Fuel Cost (₹)</label>
+                        <div class="input-group">
+                            <span class="input-group-text">₹</span>
+                            <input type="number" class="form-control" id="id_fuel_cost" 
+                                   name="fuel_cost" step="0.01" min="0"
+                                   placeholder="Enter monthly fuel cost">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="id_extended_warranty" class="form-label">Extended Warranty Cost (₹)</label>
+            <div class="input-group">
+                    <span class="input-group-text">₹</span>
+                    <input type="number" class="form-control" id="id_extended_warranty" 
+                           name="extended_warranty" step="0.01" min="0"
+                           placeholder="Enter extended warranty cost">
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h2 class="form-section-title">
+                <i class="bi bi-person"></i>
+                User Information
+            </h2>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="monthly_income" class="form-label">Monthly Income (₹)</label>
+                    <input type="number" class="form-control" id="monthly_income" 
+                           name="monthly_income" step="any" min="0" required>
+                </div>
+            </div>
+        </div>
+        
+        <div class="d-grid mt-4 gap-2">
+            <button type="submit" class="btn btn-primary btn-lg calculate-btn">
+                <i class="bi bi-calculator me-2"></i>Calculate Loan
+            </button>
+            <button type="button" id="saveCalculation" class="btn btn-success btn-lg save-btn">
+                <i class="bi bi-save me-2"></i>Save Calculation
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script src="{% static 'car_loan/js/calculator_form.js' %}?v=3" defer></script>
+   
+{% endblock %}

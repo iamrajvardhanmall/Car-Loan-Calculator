@@ -1,0 +1,219 @@
+.saved-calculations {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.calculations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.calculation-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.calculation-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.calculation-header {
+    border-bottom: 2px solid rgba(67, 97, 238, 0.1);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.calculation-date {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.calculation-detail {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.5rem 0;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.detail-label {
+    color: #555;
+    font-weight: 500;
+}
+
+.detail-value {
+    font-weight: 600;
+    color: #333;
+}
+
+.highlight {
+    background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(58, 12, 163, 0.1));
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin: 1rem 0;
+    transition: all 0.3s ease;
+}
+
+.highlight:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.15);
+}
+
+.highlight-detail {
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.highlight-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #4361ee;
+    text-shadow: 0 0 20px rgba(67, 97, 238, 0.2);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.action-btn {
+    flex: 1;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.view-btn {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.delete-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.action-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.no-calculations {
+    text-align: center;
+    padding: 3rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    margin-top: 2rem;
+}
+
+/* Modern refresh overrides */
+.saved-calculations {
+    max-width: 1180px;
+    padding: 0 1rem 2rem;
+}
+
+.saved-calculations > header {
+    text-align: center;
+    margin: 1rem 0 2rem;
+    padding: 1.5rem 1rem;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.94), rgba(37, 99, 235, 0.88));
+    color: #fff;
+    border-radius: 1.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 28px 60px -34px rgba(15, 23, 42, 0.3);
+}
+
+.saved-calculations > header h1,
+.saved-calculations > header p {
+    color: #fff;
+}
+
+.calculations-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+}
+
+.calculation-card {
+    background: rgba(255, 255, 255, 0.84);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    border-radius: 1.5rem;
+    padding: 1.35rem;
+    box-shadow: 0 22px 50px -34px rgba(15, 23, 42, 0.22);
+    backdrop-filter: blur(18px) saturate(160%);
+}
+
+.calculation-header {
+    border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+    padding-bottom: 0.9rem;
+}
+
+.calculation-date {
+    color: #64748b;
+}
+
+.calculation-detail {
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.detail-label {
+    color: #475569;
+}
+
+.detail-value {
+    color: #0f172a;
+}
+
+.highlight {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(6, 182, 212, 0.08));
+    border: 1px solid rgba(37, 99, 235, 0.12);
+}
+
+.highlight-value {
+    color: #2563eb;
+    animation: none;
+    text-shadow: none;
+}
+
+.action-buttons {
+    gap: 0.75rem;
+}
+
+.action-btn {
+    border-radius: 0.9rem;
+    padding: 0.8rem 0.95rem;
+}
+
+.view-btn {
+    background: linear-gradient(135deg, #0f172a, #2563eb);
+}
+
+.delete-btn {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+}
+
+.no-calculations {
+    background: rgba(255, 255, 255, 0.84);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    border-radius: 1.5rem;
+    box-shadow: 0 22px 50px -34px rgba(15, 23, 42, 0.22);
+}
