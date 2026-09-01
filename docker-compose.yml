@@ -1,0 +1,98 @@
+services:
+  # -------------------------------------------------------------
+  # Microservice 1: PostgreSQL Relational Database
+  # -------------------------------------------------------------
+  postgres_db:
+    image: postgres:15-alpine
+    container_name: carloan_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-Car_Loan}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres123}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - carloan_microservices_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-Car_Loan}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # -------------------------------------------------------------
+  # Microservice 2: AI Vehicle Valuation (Gemini 2.0 Flash)
+  # -------------------------------------------------------------
+  valuation_service:
+    build:
+      context: ./services/ai_valuation_service
+      dockerfile: Dockerfile
+    container_name: carloan_valuation_service
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    environment:
+      - GOOGLE_GEMINI_API_KEY=${GOOGLE_GEMINI_API_KEY:-}
+      - GOOGLE_GEMINI_API_URL=${GOOGLE_GEMINI_API_URL:-https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent}
+    networks:
+      - carloan_microservices_net
+
+  # -------------------------------------------------------------
+  # Microservice 3: PDF Document Generation (WeasyPrint)
+  # -------------------------------------------------------------
+  pdf_service:
+    build:
+      context: ./services/pdf_service
+      dockerfile: Dockerfile
+    container_name: carloan_pdf_service
+    restart: unless-stopped
+    ports:
+      - "5002:5002"
+    networks:
+      - carloan_microservices_net
+
+  # -------------------------------------------------------------
+  # Microservice 4: Main Web Application & Financial Gateway (Django)
+  # -------------------------------------------------------------
+  web_app:
+    build:
+      context: ./loan_calculator
+      dockerfile: Dockerfile
+    container_name: carloan_web_app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./loan_calculator:/app
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=${SECRET_KEY:-django-insecure-carloan-microservices-secret-key}
+      - DB_NAME=${DB_NAME:-Car_Loan}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres123}
+      - DB_HOST=postgres_db
+      - DB_PORT=5432
+      - GOOGLE_GEMINI_API_KEY=${GOOGLE_GEMINI_API_KEY:-}
+      - VALUATION_SERVICE_URL=http://valuation_service:5001/api/estimate
+      - PDF_SERVICE_URL=http://pdf_service:5002/api/generate-pdf
+      - SOCIAL_AUTH_GOOGLE_OAUTH2_KEY=${SOCIAL_AUTH_GOOGLE_OAUTH2_KEY:-}
+      - SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET=${SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET:-}
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+      valuation_service:
+        condition: service_started
+      pdf_service:
+        condition: service_started
+    networks:
+      - carloan_microservices_net
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  carloan_microservices_net:
+    driver: bridge

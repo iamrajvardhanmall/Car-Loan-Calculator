@@ -3,5 +3,4 @@ python-dotenv==1.0.0
 psycopg2-binary==2.9.12
 social-auth-app-django==5.4.3
 weasyprint==60.2
-# Note: Use a virtualenv with Python >=3.11.
-
+requests>=2.28.0

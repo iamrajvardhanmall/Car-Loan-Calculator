@@ -19,6 +19,7 @@ from datetime import datetime
 import json
 import math
 import logging
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -496,10 +497,22 @@ def download_pdf(request):
         'total_cost_of_ownership': request.GET.get('total_cost_of_ownership'),
     }
     
-    # Render the template to a string
+    # 1. Try delegating to independent PDF Generator Microservice if configured
+    pdf_service_url = getattr(settings, 'PDF_SERVICE_URL', None)
+    if pdf_service_url:
+        try:
+            resp = requests.post(pdf_service_url, json=context, timeout=15)
+            if resp.status_code == 200:
+                response = HttpResponse(resp.content, content_type='application/pdf')
+                response['Content-Disposition'] = 'attachment; filename="loan_summary.pdf"'
+                return response
+            else:
+                logger.warning(f"PDF microservice returned status {resp.status_code}, falling back to local renderer.")
+        except Exception as ms_err:
+            logger.warning(f"PDF microservice connection failed: {ms_err}. Falling back to local renderer.")
+
+    # 2. Fallback: Local WeasyPrint render
     html_string = render_to_string('car_loan/pdf_template.html', context)
-    
-    # Generate the PDF
     pdf = HTML(string=html_string).write_pdf()
 
     # Return the PDF as a response
@@ -884,6 +897,18 @@ def value_estimator_api(request):
         payload = json.loads(request.body.decode('utf-8'))
     except json.JSONDecodeError:
         return JsonResponse({'success': False, 'error': 'Invalid JSON data'}, status=400)
+
+    valuation_service_url = getattr(settings, 'VALUATION_SERVICE_URL', None)
+    if valuation_service_url:
+        try:
+            resp = requests.post(valuation_service_url, json=payload, timeout=20)
+            if resp.status_code == 200:
+                data = resp.json()
+                return JsonResponse(data)
+            else:
+                logger.warning("AI Valuation microservice returned status %s, falling back to local engine.", resp.status_code)
+        except Exception as ms_err:
+            logger.warning("AI Valuation microservice error: %s. Falling back to local engine.", ms_err)
 
     try:
         result = estimate_vehicle_payload(payload)

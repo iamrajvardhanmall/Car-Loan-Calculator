@@ -71,35 +71,55 @@
 
 ```
 CarLoan/
-├── loan_calculator/                  # Django project root
-│   ├── manage.py                     # Django CLI
-│   ├── requirements.txt              # Project dependencies
-│   ├── .env.example                  # Environment template
-│   ├── .env                          # Local secrets (git-ignored)
-│   │
-│   ├── loan_calculator/              # Project configuration
-│   │   ├── settings.py               # Central settings & env loader
-│   │   ├── urls.py                   # Master routing & auth views
-│   │   ├── wsgi.py / asgi.py         # Deployment gateways
-│   │
-│   └── car_loan/                     # Core application
-│       ├── models.py                 # 6 PostgreSQL models
-│       ├── views.py                  # Core calculations & AI views
-│       ├── urls.py                   # App routing endpoints
-│       ├── forms.py                  # Form definitions & validation
-│       ├── admin.py                  # Django Admin registrations
-│       ├── backends.py               # Custom Google OAuth2 backend
-│       │
-│       ├── templates/
-│       │   ├── car_loan/             # Main app templates (9 templates)
-│       │   └── registration/         # Auth templates (4 templates)
-│       │
-│       └── static/car_loan/
-│           ├── css/                  # Clean per-view modular stylesheets (8 files)
-│           ├── js/                   # Dedicated modular JS scripts (9 files)
-│           └── images/               # Logos and static assets
+├── docker-compose.yml                # Microservices orchestration (Web, DB, AI, PDF)
+├── .env.example                      # Central environment variables template
+├── .gitignore                        # Git ignore rules
 │
-└── .gitignore                        # Standard Python/Django ignore rules
+├── services/                         # Independent Microservices Module
+│   ├── ai_valuation_service/         # 🤖 AI Appraisal & Gemini 2.0 Flash (Port 5001)
+│   │   ├── Dockerfile
+│   │   ├── main.py
+│   │   ├── requirements.txt
+│   │   └── README.md
+│   │
+│   └── pdf_service/                  # 📄 PDF Document Generator (Port 5002)
+│       ├── Dockerfile
+│       ├── main.py
+│       ├── requirements.txt
+│       └── README.md
+│
+└── loan_calculator/                  # 🌐 Main Web Application (Django - Port 8000)
+    ├── Dockerfile                    # Container definition
+    ├── manage.py                     # Django CLI
+    ├── requirements.txt              # Web dependencies
+    │
+    ├── loan_calculator/              # Project configuration
+    │   ├── settings.py               # Settings & Microservices endpoints
+    │   └── urls.py                   # Master routing & auth views
+    │
+    └── car_loan/                     # Core application
+        ├── models.py                 # PostgreSQL models
+        ├── views.py                  # Calculation engine & microservice delegations
+        ├── urls.py                   # App endpoints
+        ├── templates/                # Bootstrap 5 UI templates
+        └── static/                   # Modular CSS and JS
+```
+
+---
+
+## 🐳 Quickstart with Docker Microservices
+
+To spin up the entire microservices ecosystem (PostgreSQL, AI Valuation, PDF Generator, and Django):
+
+```bash
+# 1. Build and run all microservices in background
+docker compose up -d --build
+
+# 2. Run database migrations inside web container
+docker compose exec web_app python manage.py migrate
+
+# 3. Access web application
+# http://localhost:8000
 ```
 
 ---

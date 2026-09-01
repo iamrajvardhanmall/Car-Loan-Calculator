@@ -28,7 +28,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-change-in-producti
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 't')
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'web_app', '0.0.0.0', '*']
 
 
 # Application definition
@@ -145,6 +145,10 @@ LOAN_RATE_API_URL = "https://api.example.com/interest-rates"  # Replace with act
 # Google Gemini API Configuration
 GOOGLE_GEMINI_API_KEY = os.getenv('GOOGLE_GEMINI_API_KEY', '')
 GOOGLE_GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent'
+
+# Microservices Endpoints
+VALUATION_SERVICE_URL = os.getenv('VALUATION_SERVICE_URL', '')
+PDF_SERVICE_URL = os.getenv('PDF_SERVICE_URL', '')
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',

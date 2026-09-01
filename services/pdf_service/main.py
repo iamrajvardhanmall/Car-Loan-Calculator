@@ -1,0 +1,218 @@
+"""
+PDF Generator Microservice
+Powered by FastAPI & WeasyPrint
+"""
+import io
+import logging
+from datetime import datetime
+from typing import Optional
+
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import Response
+from pydantic import BaseModel
+from jinja2 import Template
+from weasyprint import HTML
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("pdf_service")
+
+app = FastAPI(
+    title="PDF Generation Microservice",
+    description="Independent microservice for high-fidelity loan PDF summary rendering.",
+    version="1.0.0",
+)
+
+HTML_TEMPLATE = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Loan Summary Report</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        h1 {
+            font-size: 26px;
+            color: #1e3a8a;
+            margin: 0 0 5px 0;
+        }
+        .subtitle {
+            font-size: 13px;
+            color: #64748b;
+            margin: 0;
+        }
+        .summary-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            background: #ffffff;
+            margin-bottom: 25px;
+        }
+        .summary-grid {
+            display: table;
+            width: 100%;
+        }
+        .summary-row {
+            display: table-row;
+        }
+        .summary-label {
+            display: table-cell;
+            padding: 10px 5px;
+            font-weight: 600;
+            color: #475569;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+        }
+        .summary-value {
+            display: table-cell;
+            padding: 10px 5px;
+            text-align: right;
+            font-weight: 600;
+            color: #0f172a;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+        }
+        .highlight-value {
+            color: #2563eb;
+            font-size: 16px;
+        }
+        .disclaimer {
+            font-size: 11px;
+            color: #94a3b8;
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚗 AI Car Loan Summary</h1>
+        <p class="subtitle">Generated on {{ generated_date }}</p>
+    </div>
+
+    <div class="summary-card">
+        <div class="summary-grid">
+            <div class="summary-row">
+                <div class="summary-label">Vehicle Price</div>
+                <div class="summary-value">₹{{ vehicle_price }}</div>
+            </div>
+            <div class="summary-row">
+                <div class="summary-label">Down Payment</div>
+                <div class="summary-value">₹{{ down_payment }}</div>
+            </div>
+            <div class="summary-row">
+                <div class="summary-label">Total Loan Amount</div>
+                <div class="summary-value">₹{{ loan_amount }}</div>
+            </div>
+            <div class="summary-row">
+                <div class="summary-label">Loan Term</div>
+                <div class="summary-value">{{ loan_term }} Months</div>
+            </div>
+            <div class="summary-row">
+                <div class="summary-label">Interest Rate</div>
+                <div class="summary-value">{{ interest_rate }}%</div>
+            </div>
+            <div class="summary-row">
+                <div class="summary-label">Credit Score</div>
+                <div class="summary-value">{{ credit_score or 'N/A' }}</div>
+            </div>
+            <div class="summary-row">
+                <div class="summary-label">Estimated Monthly Payment (EMI)</div>
+                <div class="summary-value highlight-value">₹{{ monthly_payment }}</div>
+            </div>
+            <div class="summary-row">
+                <div class="summary-label">Total Lifetime Interest</div>
+                <div class="summary-value">₹{{ total_interest }}</div>
+            </div>
+            <div class="summary-row">
+                <div class="summary-label">Total Cost of Loan</div>
+                <div class="summary-value">₹{{ total_payment }}</div>
+            </div>
+            {% if total_cost_of_ownership %}
+            <div class="summary-row">
+                <div class="summary-label">Total Cost of Ownership (TCO)</div>
+                <div class="summary-value highlight-value">₹{{ total_cost_of_ownership }}</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <p class="disclaimer">
+        This loan summary is generated by the AI Car Loan Calculator platform for informational purposes only.
+        Actual loan approval, rates, and terms depend upon lender policies and credit evaluation.
+    </p>
+</body>
+</html>
+"""
+
+
+class PDFRequest(BaseModel):
+    vehicle_price: Optional[str] = "0.00"
+    down_payment: Optional[str] = "0.00"
+    loan_amount: Optional[str] = "0.00"
+    monthly_payment: Optional[str] = "0.00"
+    total_interest: Optional[str] = "0.00"
+    total_payment: Optional[str] = "0.00"
+    loan_term: Optional[str] = "60"
+    interest_rate: Optional[str] = "5.0"
+    credit_score: Optional[str] = None
+    insurance_cost: Optional[str] = None
+    maintenance_cost: Optional[str] = None
+    fuel_cost: Optional[str] = None
+    extended_warranty: Optional[str] = None
+    total_cost_of_ownership: Optional[str] = None
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy", "service": "pdf_service"}
+
+
+@app.post("/api/generate-pdf")
+def generate_pdf(req: PDFRequest):
+    try:
+        template = Template(HTML_TEMPLATE)
+        rendered_html = template.render(
+            generated_date=datetime.now().strftime("%B %d, %Y"),
+            vehicle_price=req.vehicle_price,
+            down_payment=req.down_payment,
+            loan_amount=req.loan_amount,
+            monthly_payment=req.monthly_payment,
+            total_interest=req.total_interest,
+            total_payment=req.total_payment,
+            loan_term=req.loan_term,
+            interest_rate=req.interest_rate,
+            credit_score=req.credit_score,
+            insurance_cost=req.insurance_cost,
+            maintenance_cost=req.maintenance_cost,
+            fuel_cost=req.fuel_cost,
+            extended_warranty=req.extended_warranty,
+            total_cost_of_ownership=req.total_cost_of_ownership,
+        )
+
+        pdf_bytes = HTML(string=rendered_html).write_pdf()
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={"Content-Disposition": 'attachment; filename="loan_summary.pdf"'},
+        )
+    except Exception as exc:
+        logger.error("PDF generation failed: %s", exc, exc_info=True)
+        raise HTTPException(status_code=500, detail=str(exc))
