@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: valuation-deployment
+  labels:
+    app: valuation-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: valuation-service
+  template:
+    metadata:
+      labels:
+        app: valuation-service
+    spec:
+      containers:
+      - name: valuation-service
+        image: carloancalculator-valuation_service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5001
+        resources:
+          requests:
+            cpu: "100m"     # Baseline request: 0.1 CPU core
+            memory: "128Mi"
+          limits:
+            cpu: "500m"     # Max limit: 0.5 CPU core
+            memory: "256Mi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5001
+          initialDelaySeconds: 5
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: valuation-service
+spec:
+  type: ClusterIP
+  selector:
+    app: valuation-service
+  ports:
+  - port: 5001
+    targetPort: 5001
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: valuation-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: valuation-deployment
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50 # Automatically scale out when average CPU > 50%

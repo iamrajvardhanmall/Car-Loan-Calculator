@@ -15,6 +15,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
+from prometheus_fastapi_instrumentator import Instrumentator
+from prometheus_client import Counter, Histogram
 
 load_dotenv()
 
@@ -34,6 +36,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Custom Prometheus Metrics
+VALUATION_REQUESTS_TOTAL = Counter(
+    "carloan_ai_valuation_requests_total",
+    "Total AI vehicle valuation requests",
+    ["engine", "status"]
+)
+VALUATION_LATENCY = Histogram(
+    "carloan_ai_valuation_latency_seconds",
+    "Latency of AI valuation requests in seconds"
+)
+
+# Auto-instrument default FastAPI metrics (/metrics)
+Instrumentator().instrument(app).expose(app)
 
 GOOGLE_GEMINI_API_KEY = os.getenv("GOOGLE_GEMINI_API_KEY", "")
 GOOGLE_GEMINI_API_URL = os.getenv(
@@ -209,6 +225,8 @@ def health_check():
 
 @app.post("/api/estimate", response_model=ValuationResponse)
 def estimate_vehicle(req: ValuationRequest):
+    import time
+    start_time = time.time()
     try:
         mode = req.mode or 'manual'
         make = (req.make or 'Unknown').strip() or 'Unknown'
@@ -247,6 +265,10 @@ def estimate_vehicle(req: ValuationRequest):
                 image_count=len(images) if mode == 'image' else 0,
             )
 
+        duration = time.time() - start_time
+        VALUATION_LATENCY.observe(duration)
+        VALUATION_REQUESTS_TOTAL.labels(engine=engine_used, status="success").inc()
+
         return ValuationResponse(
             success=True,
             text=ai_text,
@@ -256,5 +278,6 @@ def estimate_vehicle(req: ValuationRequest):
             engine_used=engine_used,
         )
     except Exception as exc:
+        VALUATION_REQUESTS_TOTAL.labels(engine="unknown", status="error").inc()
         logger.error("Valuation failed: %s", exc, exc_info=True)
         raise HTTPException(status_code=500, detail=str(exc))

@@ -1,0 +1,11 @@
+# AWS Region
+aws_region = "us-east-1"
+
+# EC2 Instance Type (t3.small recommended, or t2.micro for AWS Free Tier)
+instance_type = "t3.small"
+
+# Existing EC2 Key Pair name for SSH (optional)
+key_name = ""
+
+# Environment Name
+environment = "production"

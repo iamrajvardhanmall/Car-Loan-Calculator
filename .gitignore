@@ -1,12 +1,21 @@
-# Byte-compiled / optimized / DLL files
+# =================================================================
+# Git Ignore Rules for CarLoan Microservices Project
+# =================================================================
+
+# 1. Environment & Secret Configuration Files (CRITICAL: NEVER COMMIT)
+.env
+.env.*
+!.env.example
+*.env
+local_settings.py
+secrets.yaml
+*-secrets.yaml
+
+# 2. Python bytecode & cache
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
-
-# Distribution / packaging
 .Python
 build/
 develop-eggs/
@@ -26,15 +35,22 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-# PyInstaller
-*.manifest
-*.spec
+# 3. Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+# 4. Django Runtime & Database
+*.log
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
 
-# Unit test / coverage reports
+# 5. Testing & Code Coverage
 htmlcov/
 .tox/
 .nox/
@@ -49,23 +65,7 @@ coverage.xml
 .pytest_cache/
 cover/
 
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-media/
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# IDE and OS files
+# 6. IDEs & Operating System Artifacts
 .idea/
 .vscode/
 *.swp
@@ -73,3 +73,27 @@ venv.bak/
 *~
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# 7. Terraform State & Variables
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+crash.log
+
+# 8. Local Documentation & Notes
+PROJECT_OVERVIEW.md
+DEVOPS_MICROSERVICES_GUIDE.md
+KUBERNETES_DEPLOYMENT_GUIDE.md
+docker.txt
+kubernetes.txt
+terraform.txt
+prometheus.txt
+webhooks.txt
+grafana.txt
+DEVOPS_COMPLETE_GUIDE.txt
+PROJECT_SYNOPSIS.txt
+PROJECT_SYNOPSIS.html
+*.txt

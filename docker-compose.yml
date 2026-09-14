@@ -26,6 +26,7 @@ services:
   # Microservice 2: AI Vehicle Valuation (Gemini 2.0 Flash)
   # -------------------------------------------------------------
   valuation_service:
+    image: carloancalculator-valuation_service:latest
     build:
       context: ./services/ai_valuation_service
       dockerfile: Dockerfile
@@ -43,6 +44,7 @@ services:
   # Microservice 3: PDF Document Generation (WeasyPrint)
   # -------------------------------------------------------------
   pdf_service:
+    image: carloancalculator-pdf_service:latest
     build:
       context: ./services/pdf_service
       dockerfile: Dockerfile
@@ -57,6 +59,7 @@ services:
   # Microservice 4: Main Web Application & Financial Gateway (Django)
   # -------------------------------------------------------------
   web_app:
+    image: carloancalculator-web_app:latest
     build:
       context: ./loan_calculator
       dockerfile: Dockerfile

@@ -12,6 +12,8 @@ from fastapi.responses import Response
 from pydantic import BaseModel
 from jinja2 import Template
 from weasyprint import HTML
+from prometheus_fastapi_instrumentator import Instrumentator
+from prometheus_client import Counter, Histogram
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("pdf_service")
@@ -21,6 +23,20 @@ app = FastAPI(
     description="Independent microservice for high-fidelity loan PDF summary rendering.",
     version="1.0.0",
 )
+
+# Custom Prometheus Metrics
+PDF_REQUESTS_TOTAL = Counter(
+    "carloan_pdf_generation_requests_total",
+    "Total PDF generation requests",
+    ["status"]
+)
+PDF_LATENCY = Histogram(
+    "carloan_pdf_generation_latency_seconds",
+    "Latency of PDF generation in seconds"
+)
+
+# Auto-instrument default FastAPI metrics (/metrics)
+Instrumentator().instrument(app).expose(app)
 
 HTML_TEMPLATE = """
 <!DOCTYPE html>
@@ -187,6 +203,8 @@ def health_check():
 
 @app.post("/api/generate-pdf")
 def generate_pdf(req: PDFRequest):
+    import time
+    start_time = time.time()
     try:
         template = Template(HTML_TEMPLATE)
         rendered_html = template.render(
@@ -208,11 +226,17 @@ def generate_pdf(req: PDFRequest):
         )
 
         pdf_bytes = HTML(string=rendered_html).write_pdf()
+        
+        duration = time.time() - start_time
+        PDF_LATENCY.observe(duration)
+        PDF_REQUESTS_TOTAL.labels(status="success").inc()
+
         return Response(
             content=pdf_bytes,
             media_type="application/pdf",
             headers={"Content-Disposition": 'attachment; filename="loan_summary.pdf"'},
         )
     except Exception as exc:
+        PDF_REQUESTS_TOTAL.labels(status="error").inc()
         logger.error("PDF generation failed: %s", exc, exc_info=True)
         raise HTTPException(status_code=500, detail=str(exc))
