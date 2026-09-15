@@ -1,69 +1,107 @@
-# 🚗 AI Car Loan Calculator & Valuation Platform
-
 <div align="center">
 
-![Django](https://img.shields.io/badge/Django-4.2-092E20?style=for-the-badge&logo=django&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-5432-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
-![Google Gemini](https://img.shields.io/badge/Google_Gemini-2.0_Flash-8E75B2?style=for-the-badge&logo=google&logoColor=white)
-![Bootstrap 5](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
+# 🚗 AI Car Loan Calculator & Intelligent Valuation Platform
 
-**A full-featured, AI-powered car financing and vehicle appraisal web application built with Django and Google Gemini 2.0.**
+### *Enterprise-Grade Microservices Architecture for Precision Auto Financing, Multimodal AI Appraisal & Cloud-Native DevOps*
 
-[Explore Features](#-key-features) • [Installation](#-getting-started) • [Environment Config](#-environment-variables) • [Database Architecture](#-database-schema) • [API & Endpoints](#-routes--endpoints)
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/Django-4.2-092E20?style=for-the-badge&logo=django&logoColor=white" alt="Django" />
+  <img src="https://img.shields.io/badge/FastAPI-0.109+-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/Google_Gemini-2.0_Flash-8E75B2?style=for-the-badge&logo=google&logoColor=white" alt="Gemini" />
+  <img src="https://img.shields.io/badge/PostgreSQL-15-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/Docker_Compose-Enabled-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+  <img src="https://img.shields.io/badge/Kubernetes-K8s_Ready-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white" alt="Kubernetes" />
+  <img src="https://img.shields.io/badge/Terraform-AWS_IaC-844FBA?style=for-the-badge&logo=terraform&logoColor=white" alt="Terraform" />
+  <img src="https://img.shields.io/badge/Prometheus_%26_Grafana-Observed-F46800?style=for-the-badge&logo=prometheus&logoColor=white" alt="Prometheus" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License" />
+</p>
+
+[✨ Key Features](#-key-features) • [🏛️ Architecture](#-system-architecture) • [📦 Microservices](#-core-microservices) • [🐳 Docker Setup](#-quickstart-with-docker-compose) • [☸️ Kubernetes](#-kubernetes-orchestration) • [🏗️ Terraform AWS](#-infrastructure-as-code-terraform) • [📊 Observability](#-monitoring--observability) • [🗄️ Database Schema](#-database-architecture) • [🌐 API Endpoints](#-routes--api-reference)
+
+---
 
 </div>
 
----
-
 ## 📖 Overview
 
-**AI Car Loan Calculator** is an end-to-end financial platform engineered for car buyers. Beyond traditional monthly payment calculations, it offers **multimodal AI appraisal using Google Gemini 2.0 Flash** (supporting both image analysis and detailed spec inputs), credit-tier interest adjustments, total cost of ownership breakdowns, side-by-side loan scenario comparison, and high-fidelity PDF report generation.
+**AI Car Loan Calculator** is an end-to-end, production-ready financial technology and vehicle valuation platform. Engineered with a decoupled microservices architecture, the system combines **advanced loan mathematics** (amortization schedules, credit-tier interest adjustments, Total Cost of Ownership [TCO], early payoff simulations, and Debt-to-Income budget metrics) with **Multimodal AI Vehicle Valuation** powered by **Google Gemini 2.0 Flash**.
+
+The platform is fortified with modern Cloud & DevOps engineering:
+- **Containerized Ecosystem**: Fully orchestrated multi-service architecture via Docker Compose.
+- **Kubernetes (K8s) Orchestration**: Production-grade deployments, service discovery, ConfigMaps, and Secrets.
+- **Infrastructure as Code (IaC)**: Modular Terraform configurations provisioning automated AWS VPCs, Subnets, Security Groups, and EC2 instances.
+- **Full-Stack Observability**: Native Prometheus instrumentation scraping real-time metrics, coupled with Grafana dashboards for throughput and latency analysis.
+- **Event Webhooks & Stress Testing**: Asynchronous event dispatching system accompanied by high-concurrency load testing scripts.
 
 ---
 
-## 🌟 Key Features
+## 🏛️ System Architecture
 
-### 🧮 1. Smart Loan Calculator & Amortization
-- **Customizable Terms**: Input vehicle price, down payment, loan tenure (12–96 months), and base interest rate.
-- **Credit Score Impact Matrix**: Dynamic rate adjustments based on credit tiers (e.g., Tier 780+ discount vs. Subprime adjustments).
-- **Total Cost of Ownership (TCO)**: Computes insurance, fuel, maintenance, warranty, and lifetime interest over the loan life.
-- **Affordability Gauge**: Automatic budget verification against 15–30% monthly income rules.
+```mermaid
+graph TD
+    Client[🖥️ Web Client / Mobile Browser] -->|HTTP / HTTPS Port 8000| DjangoGateway[🌐 Web Application & API Gateway\nDjango 4.2 + Bootstrap 5]
+    
+    subgraph Core Services Mesh [Internal Docker / K8s Network]
+        DjangoGateway -->|Port 5432 SQL| Postgres[(🗄️ PostgreSQL 15 DB\nPersistent Relational Store)]
+        DjangoGateway -->|POST /api/estimate Port 5001| AIService[🤖 AI Valuation Microservice\nFastAPI + Gemini 2.0 Flash]
+        DjangoGateway -->|POST /api/generate-pdf Port 5002| PDFService[📄 PDF Generator Microservice\nFastAPI + WeasyPrint 60]
+        AIService -->|REST API Over HTTPS| GeminiAPI[✨ Google Gemini 2.0 Flash API]
+    end
 
-### 🤖 2. Multimodal AI Vehicle Valuation (Gemini 2.0 Flash)
-- **Image Appraisal**: Upload photos of the exterior/interior for instant visual vehicle condition assessment.
-- **Manual Spec Appraisal**: Appraise by Make, Model, Year, Odometer reading (km), Condition rating, and Location.
-- **Three-Tier Valuation Engine**:
-  1. **Google Gemini 2.0 Flash**: Natural language inspection and dynamic market value estimation.
-  2. **Rule-Based Depreciation Algorithm**: Fallback engine accounting for annual depreciation (12%/yr), city multipliers (e.g., Mumbai, Delhi, Bengaluru), and feature bonuses.
-  3. **Structured Commentary**: Generates condition assessments, equipment impact analysis, and market trend forecasts.
-
-### ⚖️ 3. Side-by-Side Loan Comparison
-- Compare multiple loan offers (e.g., Bank A vs. Dealer Financing) side-by-side.
-- Real-time comparison table tracking monthly payment variances, lifetime interest, and overall loan costs.
-
-### 📑 4. Instant PDF Export
-- Generates downloadable, print-ready PDF loan summaries and schedules powered by **WeasyPrint**.
-
-### 🔐 5. Secure Authentication & Social Login
-- Full user authentication lifecycle: Sign Up, Sign In, Password Change, and Sign Out.
-- **Google OAuth2** integration via `social-auth-app-django` with custom backend support.
-- User-isolated saved calculations and comparison portfolios.
+    subgraph Observability & Event Mesh
+        Prometheus[📈 Prometheus Server Port 9090] -->|Scrape /metrics| DjangoGateway
+        Prometheus -->|Scrape /metrics| AIService
+        Prometheus -->|Scrape /metrics| PDFService
+        Grafana[📊 Grafana Dashboard Port 3000] -->|Query Dashboards| Prometheus
+        DjangoGateway -->|Async Event Webhooks| WebhookListener[🔔 Webhook Server Port 9000]
+    end
+```
 
 ---
 
-## 🛠️ Technology Stack
+## ✨ Key Features
 
-| Domain | Technology | Description |
-|---|---|---|
-| **Backend Framework** | [Django 4.2](https://www.djangoproject.com/) | Robust MVC architecture with secure ORM |
-| **Database** | [PostgreSQL](https://www.postgresql.org/) | Production relational database (SQLite dev fallback) |
-| **AI / Machine Learning** | [Google Gemini 2.0 Flash API](https://ai.google.dev/) | Multimodal image and text vehicle valuation |
-| **PDF Generation** | [WeasyPrint 60.2](https://weasyprint.org/) | HTML5/CSS3 to PDF renderer |
-| **Social Auth** | `social-auth-app-django` | Google OAuth2 authentication pipeline |
-| **Frontend** | Vanilla JS ES6+ & Bootstrap 5.3 | Responsive UI with modern glassmorphism design |
-| **Icons & Typography** | Bootstrap Icons, FontAwesome, Google Fonts | *Plus Jakarta Sans* and *Inter* fonts |
+### 🧮 1. Precision Auto Financing Engine
+- **Configurable Calculations**: Customize vehicle price, down payment, loan term (12 to 96 months), and base interest rates.
+- **Dynamic Credit Tier Adjustments**: Auto-applies APR rate changes based on credit tiers (Tier 780+ Super-Prime discount to Subprime tier adjustments).
+- **Total Cost of Ownership (TCO)**: Complete lifecycle cost modeling incorporating insurance, periodic maintenance, fuel expenses, dealer documentation fees, sales tax, and warranty packages.
+- **Early Payoff & Extra Payment Simulator**: Models monthly, quarterly, yearly, or lump-sum prepayments with real-time interest and term-reduction metrics.
+- **Debt-to-Income (DTI) Budget Gauge**: Real-time financial health diagnostic (Healthy, Moderate, High Risk) against net monthly income thresholds.
+
+### 🤖 2. Multimodal AI Vehicle Appraisal (Google Gemini 2.0 Flash)
+- **Computer Vision Image Appraisal**: Upload vehicle exterior/interior photos for automated visual damage and condition assessment.
+- **Algorithmic Spec Appraisal**: Appraise vehicles based on Make, Model, Manufacturing Year, Mileage/Odometer, Mechanical Condition, and City location.
+- **High-Resilience Dual-Engine Architecture**:
+  1. **Primary**: Google Gemini 2.0 Flash for structured natural language analysis, feature valuation, and market forecasting.
+  2. **Secondary (Fallback)**: Algorithmic depreciation engine calculating compounded 12%/year depreciation, localized city economic indices (e.g., Mumbai, Delhi, Bengaluru), and premium trim bonuses.
+
+### ⚖️ 3. Multi-Scenario Loan Comparison
+- Side-by-side comparison matrix for evaluating dealer financing vs. commercial bank loans.
+- Compares monthly payment deltas, lifetime interest costs, and net savings.
+
+### 📑 4. High-Fidelity PDF Export
+- Dynamic A4 PDF generation powered by **WeasyPrint** and Jinja2 templates.
+- Exports branded loan breakdowns, payment schedules, and AI appraisal reports.
+
+### 🔐 5. Enterprise Security & Authentication
+- Session-based authentication with role-based profile isolation.
+- **Google OAuth2 Social Authentication** via `social-auth-app-django`.
+- Protected against OWASP vulnerabilities: CSRF protection, SQL injection prevention via parameterized ORM queries, and strict XSS sanitization.
+
+---
+
+## 📦 Core Microservices
+
+| Service | Technology | Port | Primary Responsibilities |
+|---|---|:---:|---|
+| **🌐 Web Gateway** | Django 4.2 / Python 3.11 | `8000` | UI presentation, user auth, credit scoring, persistence, and service routing |
+| **🤖 AI Valuation** | FastAPI / Pydantic / Uvicorn | `5001` | Multimodal visual inspection & Gemini 2.0 Flash appraisal |
+| **📄 PDF Generator** | FastAPI / WeasyPrint 60.2 | `5002` | Print-ready A4 PDF rendering of amortization & quotes |
+| **🗄️ Database** | PostgreSQL 15 Alpine | `5432` | Relational storage for user accounts, calculations, and loan models |
+| **🔔 Webhooks** | Python HTTP Event Worker | `9000` | Asynchronous event listener and webhook dispatcher |
+| **📈 Prometheus** | Prometheus v2.45+ | `9090` | Timeseries metric collector scraping service `/metrics` endpoints |
+| **📊 Grafana** | Grafana Labs v10+ | `3000` | Visual operational dashboards and SLA monitoring |
 
 ---
 
@@ -71,173 +109,151 @@
 
 ```
 CarLoan/
-├── docker-compose.yml                # Microservices orchestration (Web, DB, AI, PDF)
-├── .env.example                      # Central environment variables template
-├── .gitignore                        # Git ignore rules
+├── docker-compose.yml                  # Unified microservices orchestration
+├── .env.example                        # Template for environment configuration
+├── load_test.py                        # Concurrency and load testing suite
+├── webhook_server.py                   # Event notification test listener
 │
-├── services/                         # Independent Microservices Module
-│   ├── ai_valuation_service/         # 🤖 AI Appraisal & Gemini 2.0 Flash (Port 5001)
+├── services/                           # Autonomous Microservices
+│   ├── ai_valuation_service/           # 🤖 AI Appraisal Microservice (FastAPI - Port 5001)
 │   │   ├── Dockerfile
-│   │   ├── main.py
+│   │   ├── main.py                     # Gemini 2.0 Flash integration & fallback engine
 │   │   ├── requirements.txt
 │   │   └── README.md
 │   │
-│   └── pdf_service/                  # 📄 PDF Document Generator (Port 5002)
+│   └── pdf_service/                    # 📄 PDF Generation Microservice (FastAPI - Port 5002)
 │       ├── Dockerfile
-│       ├── main.py
+│       ├── main.py                     # WeasyPrint document generator
 │       ├── requirements.txt
 │       └── README.md
 │
-└── loan_calculator/                  # 🌐 Main Web Application (Django - Port 8000)
-    ├── Dockerfile                    # Container definition
-    ├── manage.py                     # Django CLI
-    ├── requirements.txt              # Web dependencies
-    │
-    ├── loan_calculator/              # Project configuration
-    │   ├── settings.py               # Settings & Microservices endpoints
-    │   └── urls.py                   # Master routing & auth views
-    │
-    └── car_loan/                     # Core application
-        ├── models.py                 # PostgreSQL models
-        ├── views.py                  # Calculation engine & microservice delegations
-        ├── urls.py                   # App endpoints
-        ├── templates/                # Bootstrap 5 UI templates
-        └── static/                   # Modular CSS and JS
+├── loan_calculator/                    # 🌐 Main Web Application (Django 4.2 - Port 8000)
+│   ├── Dockerfile
+│   ├── manage.py
+│   ├── requirements.txt
+│   ├── loan_calculator/                # Global settings, URLs, & WSGI
+│   └── car_loan/                       # Core application domain
+│       ├── models.py                   # Relational ORM models
+│       ├── views.py                    # Gateway controllers & business logic
+│       ├── urls.py                     # Web endpoints
+│       ├── templates/                  # Bootstrap 5 UI templates
+│       └── static/                     # Custom CSS, JS, and asset pipeline
+│
+├── k8s/                                # ☸️ Kubernetes Manifests
+│   ├── postgres.yaml                   # PostgreSQL Deployment, Service & PV/PVC
+│   ├── web-app.yaml                    # Django Web Deployment, Service & Ingress
+│   ├── ai-valuation.yaml               # AI Service Deployment & ClusterIP Service
+│   └── pdf-service.yaml                # PDF Service Deployment & ClusterIP Service
+│
+├── terraform/                          # 🏗️ AWS Infrastructure as Code (IaC)
+│   ├── main.tf                         # VPC, Subnets, Gateways, EC2, & Security Groups
+│   ├── variables.tf                    # AWS regions, instance types, and CIDRs
+│   └── outputs.tf                      # Public IPs and DNS endpoints
+│
+└── monitoring/                         # 📊 Observability Stack
+    ├── prometheus.yml                  # Scraping configurations for all services
+    └── docker-compose.monitoring.yml   # Dedicated Prometheus & Grafana stack
 ```
 
 ---
 
-## 🐳 Quickstart with Docker Microservices
+## 🐳 Quickstart with Docker Compose
 
-To spin up the entire microservices ecosystem (PostgreSQL, AI Valuation, PDF Generator, and Django):
+The fastest way to spin up the entire microservices ecosystem is with Docker Compose:
 
+### 1. Clone the Repository & Configure Environment
 ```bash
-# 1. Build and run all microservices in background
-docker compose up -d --build
-
-# 2. Run database migrations inside web container
-docker compose exec web_app python manage.py migrate
-
-# 3. Access web application
-# http://localhost:8000
-```
-
----
-
-## 🚀 Getting Started
-
-### 1. Prerequisites
-- **Python 3.11+** installed
-- **PostgreSQL** running locally on port `5432`
-- **Git**
-
----
-
-### 2. Clone and Setup Environment
-
-```bash
-# Clone the repository
 git clone https://github.com/iamrajvardhanmall/Car-Loan-Calculator.git
-cd Car-Loan-Calculator/CarLoan/loan_calculator
-
-# Create and activate virtual environment
-python -m venv .venv
-
-# On Windows:
-.venv\Scripts\activate
-
-# On macOS/Linux:
-source .venv/bin/activate
-
-# Install required dependencies
-pip install -r requirements.txt
-```
-
----
-
-### 3. Configure Environment Variables
-
-Create a `.env` file inside `CarLoan/loan_calculator/` by copying the example:
-
-```bash
+cd Car-Loan-Calculator/CarLoan
 cp .env.example .env
 ```
 
-Configure your `.env` values:
+> **Note**: Update `.env` with your `GOOGLE_GEMINI_API_KEY` to enable AI vehicle appraisals.
 
-```ini
-SECRET_KEY=django-insecure-your-secret-key
-DEBUG=True
-
-# Database Credentials
-DB_NAME=Car_Loan
-DB_USER=postgres
-DB_PASSWORD=your_postgres_password
-DB_HOST=127.0.0.1
-DB_PORT=5432
-
-# Google Gemini API
-GOOGLE_GEMINI_API_KEY=your_gemini_api_key_here
-
-# Google OAuth2 Credentials (Optional for Social Login)
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY=your_google_client_id
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET=your_google_client_secret
+### 2. Launch All Services
+```bash
+docker compose up -d --build
 ```
+
+### 3. Run Database Migrations
+```bash
+docker compose exec web_app python manage.py migrate
+docker compose exec web_app python manage.py createsuperuser
+```
+
+### 4. Access the Services
+- **Web Platform**: [http://localhost:8000](http://localhost:8000)
+- **AI Valuation API Docs**: [http://localhost:5001/docs](http://localhost:5001/docs)
+- **PDF Service API Docs**: [http://localhost:5002/docs](http://localhost:5002/docs)
 
 ---
 
-### 4. Database Setup & Migrations
+## ☸️ Kubernetes Orchestration
 
-Create the `Car_Loan` database in PostgreSQL, then apply all migrations:
+Deploy the entire microservice ecosystem onto a local or cloud Kubernetes cluster (Minikube, Kind, or AWS EKS):
 
 ```bash
-# Apply migrations to PostgreSQL
-python manage.py migrate
+# 1. Apply Secrets & ConfigMaps
+kubectl apply -f k8s/postgres.yaml
 
-# Create superuser for Django Admin
-python manage.py createsuperuser
+# 2. Deploy AI & PDF Microservices
+kubectl apply -f k8s/ai-valuation.yaml
+kubectl apply -f k8s/pdf-service.yaml
+
+# 3. Deploy Main Web Gateway & Run Migrations
+kubectl apply -f k8s/web-app.yaml
+
+# 4. Verify Pod Health
+kubectl get pods -w
 ```
 
 ---
 
-### 5. Launch Development Server
+## 🏗️ Infrastructure as Code (Terraform)
+
+Provision the complete AWS cloud networking and compute layer using Terraform:
 
 ```bash
-python manage.py runserver
+cd terraform/
+
+# Initialize Terraform providers
+terraform init
+
+# Validate configuration
+terraform plan
+
+# Deploy infrastructure to AWS
+terraform apply -auto-approve
 ```
 
-Open your browser and navigate to: **`http://127.0.0.1:8000`**
+---
+
+## 📊 Monitoring & Observability
+
+The platform includes built-in Prometheus and Grafana instrumentation for real-time observability:
+
+```bash
+# Launch Prometheus and Grafana stack
+docker compose -f monitoring/docker-compose.monitoring.yml up -d
+```
+
+- **Prometheus Dashboard**: [http://localhost:9090](http://localhost:9090)
+- **Grafana Dashboard**: [http://localhost:3000](http://localhost:3000) *(Default credentials: `admin` / `admin`)*
 
 ---
 
-## 🔑 Environment Variables
-
-| Variable | Description | Default / Example |
-|---|---|---|
-| `SECRET_KEY` | Django cryptographic signing key | *Auto-generated string* |
-| `DEBUG` | Enables/disables debug mode | `True` |
-| `DB_NAME` | PostgreSQL database name | `Car_Loan` |
-| `DB_USER` | PostgreSQL user | `postgres` |
-| `DB_PASSWORD` | PostgreSQL user password | `your_password` |
-| `DB_HOST` | Database host address | `127.0.0.1` |
-| `DB_PORT` | Database port | `5432` |
-| `GOOGLE_GEMINI_API_KEY` | Google AI Studio API key | `AIzaSy...` |
-| `SOCIAL_AUTH_GOOGLE_OAUTH2_KEY` | Google Cloud Console OAuth Client ID | `*.apps.googleusercontent.com` |
-| `SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET` | Google Cloud Console OAuth Secret | `GOCSPX-...` |
-
----
-
-## 🗄️ Database Schema
+## 🗄️ Database Architecture
 
 ```mermaid
 erDiagram
-    User ||--o{ LoanCalculation : creates
-    User ||--o{ SavedCalculation : stores
-    User ||--o{ LoanComparison : manages
-    User ||--o{ EarlyPayoff : simulates
-    User ||--o{ MonthlyBudget : analyzes
+    AUTH_USER ||--o{ LoanCalculation : creates
+    AUTH_USER ||--o{ SavedCalculation : archives
+    AUTH_USER ||--o{ LoanComparison : evaluates
+    AUTH_USER ||--o{ EarlyPayoff : simulates
+    AUTH_USER ||--o{ MonthlyBudget : assesses
 
     LoanCalculation {
+        int id PK
         decimal vehicle_price
         decimal down_payment
         int loan_term
@@ -245,67 +261,81 @@ erDiagram
         decimal monthly_payment
         decimal total_interest
         decimal total_payment
+        timestamp created_at
     }
 
     SavedCalculation {
+        int id PK
         decimal vehicle_price
         decimal down_payment
         decimal trade_in
         decimal sales_tax
-        decimal monthly_payment
         decimal insurance_cost
         decimal maintenance_cost
         decimal fuel_cost
+        decimal total_cost_of_ownership
     }
 
     LoanComparison {
-        string name
-        decimal vehicle_price
-        decimal down_payment
+        int id PK
+        string scenario_name
+        decimal loan_amount
         int loan_term
         decimal interest_rate
         decimal monthly_payment
-        decimal total_cost
+        decimal total_interest
     }
 
     ContactQuery {
+        int id PK
         string name
         string email
         text message
-        boolean is_read
+        boolean is_resolved
     }
 ```
 
 ---
 
-## 🌐 Routes & Endpoints
+## 🌐 Routes & API Reference
 
-| URL Path | View Function | Method | Auth Required | Description |
-|---|---|---|:---:|---|
-| `/` | `home_view` | `GET` | ❌ | Redirects to login |
-| `/calculator/` | `calculator_view` | `GET` | ✅ | Interactive loan calculation dashboard |
-| `/result/` | `result_view` | `GET` | ✅ | Detailed calculation report & charts |
-| `/save-calculation/` | `save_calculation` | `POST` | ✅ | Saves current calculation to profile |
-| `/saved/` | `SavedCalculationsView` | `GET` | ✅ | User's saved calculations archive |
-| `/delete/<pk>/` | `delete_calculation` | `POST` | ✅ | Deletes a saved calculation |
-| `/download_pdf/` | `download_pdf` | `GET` | ✅ | Generates downloadable PDF report |
+### 🖥️ Web Application Routes
+
+| Path | View | Method | Auth | Description |
+|---|---|:---:|:---:|---|
+| `/` | `home_view` | `GET` | ❌ | Landing page & gateway redirect |
+| `/calculator/` | `calculator_view` | `GET` | ✅ | Interactive loan financing calculator |
+| `/result/` | `result_view` | `GET` | ✅ | Calculation breakdown & charts |
+| `/save-calculation/` | `save_calculation` | `POST` | ✅ | Saves current TCO calculation |
+| `/saved/` | `SavedCalculationsView` | `GET` | ✅ | Archived user calculation portfolio |
 | `/compare-loans/` | `compare_loans_view` | `GET`, `POST` | ✅ | Side-by-side loan scenario comparison |
-| `/delete-comparison/<pk>/` | `delete_comparison` | `POST` | ✅ | Deletes a comparison record |
 | `/value-estimator/` | `value_estimator` | `GET` | ✅ | AI Car Value Appraisal UI |
-| `/value-estimator/api/` | `value_estimator_api` | `POST` | ✅ | Backend AI appraisal API endpoint |
-| `/about/` | `about_view` | `GET`, `POST` | ❌ | About page and contact query submission |
+| `/download_pdf/` | `download_pdf` | `GET` | ✅ | Generates downloadable PDF report |
+| `/about/` | `about_view` | `GET`, `POST` | ❌ | Platform overview & contact form |
 | `/signup/` | `signup_view` | `GET`, `POST` | ❌ | User registration |
 | `/login/` | `auth_views.LoginView` | `GET`, `POST` | ❌ | User authentication |
-| `/logout/` | `auth_views.LogoutView` | `POST` | ❌ | User sign out |
+
+### 🤖 Microservice API Endpoints
+
+| Service | Method | Endpoint | Description |
+|---|:---:|---|---|
+| **AI Valuation** | `POST` | `/api/estimate` | Performs multimodal or spec vehicle valuation via Gemini 2.0 |
+| **AI Valuation** | `GET` | `/health` | Healthcheck probe for container orchestration |
+| **AI Valuation** | `GET` | `/metrics` | Prometheus metrics scrape endpoint |
+| **PDF Service** | `POST` | `/api/generate-pdf` | Renders styled HTML/CSS data into a high-res A4 PDF |
+| **PDF Service** | `GET` | `/health` | Healthcheck probe for container orchestration |
+| **PDF Service** | `GET` | `/metrics` | Prometheus metrics scrape endpoint |
 
 ---
 
-## 🛡️ Security Best Practices
+## 🧪 Stress & Load Testing
 
-- **Strict Environment Isolation**: API keys and database credentials are fully decoupled from version control.
-- **CSRF Protection**: Token validation on all mutable endpoints.
-- **SQL Injection Prevention**: Built-in parameterized Django ORM queries.
-- **Authentication Guards**: `@login_required` decorators and `LoginRequiredMixin` across financial calculation views.
+Execute the built-in asynchronous load testing suite to benchmark backend throughput under high concurrency:
+
+```bash
+# Run benchmark against calculation & valuation endpoints
+python load_test.py --concurrency 50 --requests 500
+```
 
 ---
 
@@ -320,4 +350,4 @@ erDiagram
 
 ## 📄 License
 
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for more information.
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
