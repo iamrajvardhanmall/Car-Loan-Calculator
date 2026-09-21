@@ -1,5 +1,5 @@
 output "server_public_ip" {
-  description = "Static Public Elastic IP of the CarLoan server"
+  description = "Static Public Elastic IP of the Windows CarLoan server"
   value       = aws_eip.carloan_eip.public_ip
 }
 
@@ -18,7 +18,7 @@ output "pdf_service_url" {
   value       = "http://${aws_eip.carloan_eip.public_ip}:5002/health"
 }
 
-output "ssh_command" {
-  description = "Command to SSH into the EC2 instance"
-  value       = "ssh -i your-key.pem ubuntu@${aws_eip.carloan_eip.public_ip}"
+output "rdp_connection_info" {
+  description = "Connection details for Windows Remote Desktop (RDP)"
+  value       = "RDP Address: ${aws_eip.carloan_eip.public_ip}:3389 | Username: Administrator (Get password from AWS Console using your Key Pair)"
 }

@@ -12,16 +12,25 @@ provider "aws" {
   region = var.aws_region
 }
 
-# 1. Security Group: Firewall rules for Web, API, SSH
+# 1. Security Group: Firewall rules for Windows RDP, Web, API
 resource "aws_security_group" "carloan_sg" {
-  name        = "carloan-microservices-sg"
-  description = "Allow inbound SSH, HTTP, and Microservice traffic"
+  name        = "carloan-windows-sg"
+  description = "Allow inbound RDP, WinRM, HTTP, and Microservice traffic"
 
-  # SSH Access
+  # RDP Access (Port 3389 for Windows Remote Desktop)
   ingress {
-    description = "SSH from anywhere"
-    from_port   = 22
-    to_port     = 22
+    description = "Remote Desktop Protocol (RDP)"
+    from_port   = 3389
+    to_port     = 3389
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # WinRM HTTP (Port 5985 for Remote PowerShell)
+  ingress {
+    description = "WinRM HTTP"
+    from_port   = 5985
+    to_port     = 5985
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -35,7 +44,7 @@ resource "aws_security_group" "carloan_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # Standard HTTP
+  # Standard HTTP (Port 80)
   ingress {
     description = "Standard HTTP"
     from_port   = 80
@@ -71,19 +80,19 @@ resource "aws_security_group" "carloan_sg" {
   }
 
   tags = {
-    Name        = "carloan-security-group"
+    Name        = "carloan-windows-security-group"
     Environment = var.environment
   }
 }
 
-# 2. Get latest official Ubuntu 22.04 LTS AMI
-data "aws_ami" "ubuntu" {
+# 2. Get latest official Windows Server 2022 Base AMI
+data "aws_ami" "windows" {
   most_recent = true
-  owners      = ["099720109477"] # Canonical
+  owners      = ["801119661308"] # Amazon official Windows AMIs
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+    values = ["Windows_Server-2022-English-Full-Base-*"]
   }
 
   filter {
@@ -92,27 +101,28 @@ data "aws_ami" "ubuntu" {
   }
 }
 
-# 3. Provision the EC2 Instance
+# 3. Provision the Windows EC2 Instance
 resource "aws_instance" "carloan_server" {
-  ami                    = data.aws_ami.ubuntu.id
+  ami                    = data.aws_ami.windows.id
   instance_type          = var.instance_type
   key_name               = var.key_name != "" ? var.key_name : null
   vpc_security_group_ids = [aws_security_group.carloan_sg.id]
 
-  # Root storage volume (20 GB SSD)
+  # Root storage volume (Windows Server requires at least 30 GB SSD)
   root_block_device {
-    volume_size           = 20
+    volume_size           = 40
     volume_type           = "gp3"
     delete_on_termination = true
   }
 
-  # Automated Startup Script (Installs Docker & clones repo)
-  user_data = file("${path.module}/user_data.sh")
+  # Automated Startup Script (PowerShell User Data)
+  user_data = file("${path.module}/user_data.ps1")
 
   tags = {
-    Name        = "CarLoan-Microservices-Server"
+    Name        = "CarLoan-Windows-Server"
     Environment = var.environment
     Project     = "CarLoanCalculator"
+    OS          = "Windows Server 2022"
   }
 }
 
@@ -122,7 +132,7 @@ resource "aws_eip" "carloan_eip" {
   domain   = "vpc"
 
   tags = {
-    Name        = "carloan-elastic-ip"
+    Name        = "carloan-windows-elastic-ip"
     Environment = var.environment
   }
 }
