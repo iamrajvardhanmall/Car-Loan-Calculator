@@ -37,6 +37,17 @@ def verify_signature(payload_body: bytes, signature_header: str) -> bool:
         logger.error(f"Error parsing signature: {e}")
         return False
 
+@app.get("/")
+def root():
+    return {
+        "message": "GitHub Webhook Deployment Server is running.",
+        "endpoints": {
+            "health": "/health",
+            "webhook": "/webhook (POST only)",
+            "docs": "/docs"
+        }
+    }
+
 @app.get("/health")
 def health_check():
     return {"status": "healthy", "service": "github_webhook_server"}
