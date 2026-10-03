@@ -7,7 +7,6 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from django.urls import reverse
 from django.template.loader import render_to_string
-from weasyprint import HTML
 from django.conf import settings
 from .models import LoanCalculation, SavedCalculation, LoanComparison, EarlyPayoff, MonthlyBudget, ContactQuery
 from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
@@ -516,13 +515,21 @@ def download_pdf(request):
             logger.warning(f"PDF microservice connection failed: {ms_err}. Falling back to local renderer.")
 
     # 2. Fallback: Local WeasyPrint render
-    html_string = render_to_string('car_loan/pdf_template.html', context)
-    pdf = HTML(string=html_string).write_pdf()
+    try:
+        from weasyprint import HTML
+        html_string = render_to_string('car_loan/pdf_template.html', context)
+        pdf = HTML(string=html_string).write_pdf()
 
-    # Return the PDF as a response
-    response = HttpResponse(pdf, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="loan_summary.pdf"'
-    return response
+        # Return the PDF as a response
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="loan_summary.pdf"'
+        return response
+    except Exception as pdf_err:
+        logger.error(f"Local PDF generation failed: {pdf_err}")
+        return HttpResponse(
+            "PDF generation failed on server. Please ensure PDF microservice is configured or WeasyPrint system dependencies are installed.",
+            status=500
+        )
 
 @login_required
 def compare_loans_view(request):

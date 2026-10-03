@@ -1,6 +1,5 @@
 from django.urls import path
 from . import views
-from weasyprint import HTML
 
 app_name = 'car_loan'  
 

@@ -87,7 +87,6 @@ crash.log
 PROJECT_OVERVIEW.md
 DEVOPS_MICROSERVICES_GUIDE.md
 KUBERNETES_DEPLOYMENT_GUIDE.md
-RENDER_DEPLOYMENT_GUIDE.md
 docker.txt
 kubernetes.txt
 terraform.txt
