@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from django.urls import reverse
 from django.template.loader import render_to_string
 from weasyprint import HTML
@@ -22,6 +23,9 @@ import logging
 import requests
 
 logger = logging.getLogger(__name__)
+
+def metrics_view(request):
+    return HttpResponse(generate_latest(), content_type=CONTENT_TYPE_LATEST)
 
 @csrf_protect
 def signup_view(request):

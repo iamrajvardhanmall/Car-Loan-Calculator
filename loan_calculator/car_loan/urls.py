@@ -5,6 +5,7 @@ from weasyprint import HTML
 app_name = 'car_loan'  
 
 urlpatterns = [
+    path('metrics', views.metrics_view, name='metrics'),
     path('', views.home_view, name='home'),  # Root URL now points to home_view
     path('calculator/', views.calculator_view, name='calculator'),
     path('saved/', views.SavedCalculationsView.as_view(), name='saved_calculations'),

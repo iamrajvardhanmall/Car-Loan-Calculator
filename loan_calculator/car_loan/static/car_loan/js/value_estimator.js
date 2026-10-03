@@ -17,8 +17,8 @@ function cleanAIResponse(text) {
         const el = document.getElementById('estimatedValue');
         if (el) {
             el.innerHTML = `\n                <div class="value-display">\n                    ${display}\n                </div>\n            `;
-        }
-    }
+        }   
+    }  
     
     // Process the remaining text
     const sections = text

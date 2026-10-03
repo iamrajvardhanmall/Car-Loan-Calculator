@@ -49,6 +49,7 @@ def root():
     }
 
 @app.get("/health")
+@app.get("/health/")
 def health_check():
     return {"status": "healthy", "service": "github_webhook_server"}
 
@@ -105,6 +106,6 @@ async def handle_github_webhook(request: Request, x_hub_signature_256: str = Hea
 
 if __name__ == "__main__":
     port = int(os.getenv("WEBHOOK_PORT", 9000))
-    print(f"👂 GitHub Webhook Server listening on port {port}...")
-    print(f"🔑 Webhook Secret configured: {WEBHOOK_SECRET}")
+    print(f"GitHub Webhook Server listening on port {port}...")
+    print("Webhook secret configured.")
     uvicorn.run(app, host="0.0.0.0", port=port)

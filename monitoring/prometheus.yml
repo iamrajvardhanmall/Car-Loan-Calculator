@@ -12,16 +12,16 @@ scrape_configs:
   - job_name: 'ai_valuation_service'
     metrics_path: '/metrics'
     static_configs:
-      - targets: ['host.docker.internal:5001', 'valuation_service:5001']
+      - targets: ['host.docker.internal:5001']
 
   # 3. PDF Generator Microservice (Port 5002)
   - job_name: 'pdf_service'
     metrics_path: '/metrics'
     static_configs:
-      - targets: ['host.docker.internal:5002', 'pdf_service:5002']
+      - targets: ['host.docker.internal:5002']
 
   # 4. Django Web Gateway Application (Port 8000)
   - job_name: 'carloan_web_app'
     metrics_path: '/metrics'
     static_configs:
-      - targets: ['host.docker.internal:8000', 'web_app:8000']
+      - targets: ['host.docker.internal:8000']

@@ -17,7 +17,7 @@ spec:
       containers:
       - name: valuation-service
         image: carloancalculator-valuation_service:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Never
         ports:
         - containerPort: 5001
         resources:
