@@ -16,6 +16,7 @@ from django.views.decorators.csrf import csrf_protect
 from urllib import error as urllib_error
 from urllib import request as urllib_request
 from datetime import datetime
+from django.utils import timezone
 import json
 import math
 import logging
@@ -325,64 +326,71 @@ def result_view(request):
     logger.debug(f"Headers: {dict(request.headers)}")
     
     try:
+        calc_id = request.GET.get('id')
+        saved_calc = None
+        if calc_id:
+            saved_calc = SavedCalculation.objects.filter(id=calc_id, user=request.user).first()
+            if not saved_calc:
+                saved_calc = LoanCalculation.objects.filter(id=calc_id, user=request.user).first()
+
         vehicle_price = validate_numeric_input(
-            request.GET.get('vehicle_price'),
+            request.GET.get('vehicle_price') if request.GET.get('vehicle_price') is not None else (saved_calc.vehicle_price if saved_calc else None),
             Decimal('0'),
             Decimal('10000000'),  
             Decimal('25000')  
         )
         
         down_payment = validate_numeric_input(
-            request.GET.get('down_payment'),
+            request.GET.get('down_payment') if request.GET.get('down_payment') is not None else (saved_calc.down_payment if saved_calc else None),
             Decimal('0'),
             vehicle_price,
             Decimal('5000')  
         )
         
         loan_term = int(validate_numeric_input(
-            request.GET.get('loan_term'),
+            request.GET.get('loan_term') if request.GET.get('loan_term') is not None else (saved_calc.loan_term if saved_calc else None),
             12,  # Minimum 1 year
             96,  # Maximum 8 years
             60   # Default 5 years
         ))
         
         base_interest_rate = validate_numeric_input(
-            request.GET.get('interest_rate'),
+            request.GET.get('interest_rate') if request.GET.get('interest_rate') is not None else (saved_calc.interest_rate if saved_calc else None),
             Decimal('0'),
             Decimal('100'),  
             Decimal('5.0')
         )
         
         credit_score = int(validate_numeric_input(
-            request.GET.get('credit_score'),
+            request.GET.get('credit_score') if request.GET.get('credit_score') is not None else (getattr(saved_calc, 'credit_score', None) if saved_calc else None),
             300,
             850,
             0
         ))
         
         insurance_cost = validate_numeric_input(
-            request.GET.get('insurance_cost'),
+            request.GET.get('insurance_cost') if request.GET.get('insurance_cost') is not None else (getattr(saved_calc, 'insurance_cost', None) if saved_calc else None),
             Decimal('0'),
             Decimal('2000'),  
             Decimal('0')
         )
         
         maintenance_cost = validate_numeric_input(
-            request.GET.get('maintenance_cost'),
+            request.GET.get('maintenance_cost') if request.GET.get('maintenance_cost') is not None else (getattr(saved_calc, 'maintenance_cost', None) if saved_calc else None),
             Decimal('0'),
             Decimal('1000'),  # ₹1000/month max
             Decimal('0')
         )
         
         fuel_cost = validate_numeric_input(
-            request.GET.get('fuel_cost'),
+            request.GET.get('fuel_cost') if request.GET.get('fuel_cost') is not None else (getattr(saved_calc, 'fuel_cost', None) if saved_calc else None),
             Decimal('0'),
             Decimal('1000'),  # ₹1000/month max
             Decimal('0')
         )
         
         extended_warranty = validate_numeric_input(
-            request.GET.get('extended_warranty'),
+            request.GET.get('extended_warranty') if request.GET.get('extended_warranty') is not None else (getattr(saved_calc, 'extended_warranty', None) if saved_calc else None),
             Decimal('0'),
             Decimal('10000'),  # ₹10k max
             Decimal('0')
@@ -482,40 +490,136 @@ def result_view(request):
 
 @login_required
 def download_pdf(request):
-    # Extract query parameters
-    context = {
-        'vehicle_price': request.GET.get('vehicle_price'),
-        'down_payment': request.GET.get('down_payment'),
-        'loan_amount': request.GET.get('loan_amount'),
-        'monthly_payment': request.GET.get('monthly_payment'),
-        'total_interest': request.GET.get('total_interest'),
-        'total_payment': request.GET.get('total_payment'),
-        'loan_term': request.GET.get('loan_term'),
-        'interest_rate': request.GET.get('interest_rate'),
-        'credit_score': request.GET.get('credit_score'),
-        'insurance_cost': request.GET.get('insurance_cost'),
-        'maintenance_cost': request.GET.get('maintenance_cost'),
-        'fuel_cost': request.GET.get('fuel_cost'),
-        'extended_warranty': request.GET.get('extended_warranty'),
-        'total_cost_of_ownership': request.GET.get('total_cost_of_ownership'),
-    }
-    
-    # 1. Try delegating to independent PDF Generator Microservice if configured
-    pdf_service_url = getattr(settings, 'PDF_SERVICE_URL', None)
-    if pdf_service_url:
-        try:
-            resp = requests.post(pdf_service_url, json=context, timeout=15)
-            if resp.status_code == 200:
-                response = HttpResponse(resp.content, content_type='application/pdf')
-                response['Content-Disposition'] = 'attachment; filename="loan_summary.pdf"'
-                return response
-            else:
-                logger.warning(f"PDF microservice returned status {resp.status_code}, falling back to local renderer.")
-        except Exception as ms_err:
-            logger.warning(f"PDF microservice connection failed: {ms_err}. Falling back to local renderer.")
-
-    # 2. Fallback: Local WeasyPrint render
     try:
+        calc_id = request.GET.get('id')
+        saved_calc = None
+        if calc_id:
+            saved_calc = SavedCalculation.objects.filter(id=calc_id, user=request.user).first()
+            if not saved_calc:
+                saved_calc = LoanCalculation.objects.filter(id=calc_id, user=request.user).first()
+
+        vehicle_price = validate_numeric_input(
+            request.GET.get('vehicle_price') if request.GET.get('vehicle_price') is not None else (saved_calc.vehicle_price if saved_calc else None),
+            Decimal('0'),
+            Decimal('10000000'),
+            Decimal('25000')
+        )
+        down_payment = validate_numeric_input(
+            request.GET.get('down_payment') if request.GET.get('down_payment') is not None else (saved_calc.down_payment if saved_calc else None),
+            Decimal('0'),
+            vehicle_price,
+            Decimal('5000')
+        )
+        loan_term = int(validate_numeric_input(
+            request.GET.get('loan_term') if request.GET.get('loan_term') is not None else (saved_calc.loan_term if saved_calc else None),
+            12,
+            96,
+            60
+        ))
+        base_interest_rate = validate_numeric_input(
+            request.GET.get('interest_rate') if request.GET.get('interest_rate') is not None else (saved_calc.interest_rate if saved_calc else None),
+            Decimal('0'),
+            Decimal('100'),
+            Decimal('5.0')
+        )
+        credit_score = int(validate_numeric_input(
+            request.GET.get('credit_score') if request.GET.get('credit_score') is not None else (getattr(saved_calc, 'credit_score', None) if saved_calc else None),
+            300,
+            850,
+            0
+        ))
+        insurance_cost = validate_numeric_input(
+            request.GET.get('insurance_cost') if request.GET.get('insurance_cost') is not None else (getattr(saved_calc, 'insurance_cost', None) if saved_calc else None),
+            Decimal('0'),
+            Decimal('2000'),
+            Decimal('0')
+        )
+        maintenance_cost = validate_numeric_input(
+            request.GET.get('maintenance_cost') if request.GET.get('maintenance_cost') is not None else (getattr(saved_calc, 'maintenance_cost', None) if saved_calc else None),
+            Decimal('0'),
+            Decimal('1000'),
+            Decimal('0')
+        )
+        fuel_cost = validate_numeric_input(
+            request.GET.get('fuel_cost') if request.GET.get('fuel_cost') is not None else (getattr(saved_calc, 'fuel_cost', None) if saved_calc else None),
+            Decimal('0'),
+            Decimal('1000'),
+            Decimal('0')
+        )
+        extended_warranty = validate_numeric_input(
+            request.GET.get('extended_warranty') if request.GET.get('extended_warranty') is not None else (getattr(saved_calc, 'extended_warranty', None) if saved_calc else None),
+            Decimal('0'),
+            Decimal('10000'),
+            Decimal('0')
+        )
+
+        loan_amount = vehicle_price - down_payment
+        credit_score_adjustment = calculate_credit_score_impact(credit_score)
+        final_interest_rate = base_interest_rate + credit_score_adjustment
+        monthly_payment, total_payment, total_interest = calculate_loan_metrics(
+            loan_amount, final_interest_rate, loan_term
+        )
+        total_insurance = insurance_cost * loan_term
+        total_maintenance = maintenance_cost * loan_term
+        total_fuel = fuel_cost * loan_term
+        total_cost_of_ownership = (
+            vehicle_price +
+            total_interest +
+            total_insurance +
+            total_maintenance +
+            total_fuel +
+            extended_warranty
+        )
+
+        context = {
+            'vehicle_price': f"{vehicle_price:,.2f}",
+            'down_payment': f"{down_payment:,.2f}",
+            'loan_amount': f"{loan_amount:,.2f}",
+            'monthly_payment': f"{monthly_payment:,.2f}",
+            'total_interest': f"{total_interest:,.2f}",
+            'total_payment': f"{total_payment:,.2f}",
+            'loan_term': loan_term,
+            'interest_rate': f"{final_interest_rate:.2f}",
+            'credit_score': credit_score if credit_score else 'N/A',
+            'insurance_cost': f"{insurance_cost:,.2f}",
+            'maintenance_cost': f"{maintenance_cost:,.2f}",
+            'fuel_cost': f"{fuel_cost:,.2f}",
+            'extended_warranty': f"{extended_warranty:,.2f}",
+            'total_cost_of_ownership': f"{total_cost_of_ownership:,.2f}",
+            'now': timezone.now(),
+        }
+
+        # 1. Try delegating to independent PDF Generator Microservice if configured
+        pdf_service_url = getattr(settings, 'PDF_SERVICE_URL', None)
+        if pdf_service_url:
+            try:
+                ms_payload = {
+                    'vehicle_price': str(vehicle_price),
+                    'down_payment': str(down_payment),
+                    'loan_amount': str(loan_amount),
+                    'monthly_payment': str(monthly_payment),
+                    'total_interest': str(total_interest),
+                    'total_payment': str(total_payment),
+                    'loan_term': str(loan_term),
+                    'interest_rate': str(final_interest_rate),
+                    'credit_score': str(credit_score) if credit_score else None,
+                    'insurance_cost': str(insurance_cost),
+                    'maintenance_cost': str(maintenance_cost),
+                    'fuel_cost': str(fuel_cost),
+                    'extended_warranty': str(extended_warranty),
+                    'total_cost_of_ownership': str(total_cost_of_ownership),
+                }
+                resp = requests.post(pdf_service_url, json=ms_payload, timeout=15)
+                if resp.status_code == 200:
+                    response = HttpResponse(resp.content, content_type='application/pdf')
+                    response['Content-Disposition'] = 'attachment; filename="loan_summary.pdf"'
+                    return response
+                else:
+                    logger.warning(f"PDF microservice returned status {resp.status_code}, falling back to local renderer.")
+            except Exception as ms_err:
+                logger.warning(f"PDF microservice connection failed: {ms_err}. Falling back to local renderer.")
+
+        # 2. Fallback: Local WeasyPrint render
         from weasyprint import HTML
         html_string = render_to_string('car_loan/pdf_template.html', context)
         pdf = HTML(string=html_string).write_pdf()
@@ -525,9 +629,9 @@ def download_pdf(request):
         response['Content-Disposition'] = 'attachment; filename="loan_summary.pdf"'
         return response
     except Exception as pdf_err:
-        logger.error(f"Local PDF generation failed: {pdf_err}")
+        logger.error(f"Local PDF generation failed: {pdf_err}", exc_info=True)
         return HttpResponse(
-            "PDF generation failed on server. Please ensure PDF microservice is configured or WeasyPrint system dependencies are installed.",
+            f"PDF generation failed on server ({str(pdf_err)}). Please ensure PDF microservice is configured or WeasyPrint system dependencies are installed.",
             status=500
         )
 

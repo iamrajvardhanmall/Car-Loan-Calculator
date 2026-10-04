@@ -350,6 +350,14 @@ footer.footer {
     transform: translateX(4px);
 }
 
+.social-links {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
 .social-links a {
     color: #ffffff;
     background: rgba(255, 255, 255, 0.08);
@@ -365,10 +373,24 @@ footer.footer {
 }
 
 .social-links a:hover {
-    background: var(--primary-color);
-    border-color: var(--primary-color);
     transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(79, 70, 229, 0.4);
+    color: #ffffff;
+}
+
+.social-links a.social-linkedin:hover,
+.social-links a[title*="LinkedIn"]:hover,
+.social-links a:has(.bi-linkedin):hover {
+    background: #0a66c2;
+    border-color: #0a66c2;
+    box-shadow: 0 6px 15px rgba(10, 102, 194, 0.45);
+}
+
+.social-links a.social-instagram:hover,
+.social-links a[title*="Instagram"]:hover,
+.social-links a:has(.bi-instagram):hover {
+    background: #e1306c;
+    border-color: #e1306c;
+    box-shadow: 0 6px 15px rgba(225, 48, 108, 0.45);
 }
 
 @media (max-width: 991.98px) {

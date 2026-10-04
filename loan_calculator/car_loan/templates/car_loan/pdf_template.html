@@ -103,6 +103,12 @@
             <span>Interest Rate:</span>
             <span>{{ interest_rate }}%</span>
         </div>
+        {% if total_cost_of_ownership %}
+        <div class="summary-item">
+            <span>Total Cost of Ownership:</span>
+            <span>₹{{ total_cost_of_ownership }}</span>
+        </div>
+        {% endif %}
     </div>
 
     <p class="disclaimer">
