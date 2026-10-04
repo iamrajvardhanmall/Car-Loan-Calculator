@@ -168,14 +168,14 @@
                                 <i class="bi bi-folder"></i>
                                 <span>My Calculations</span>
                             </a>
-                            <a class="nav-link mb-2" href="#settings">
+                            <!-- <a class="nav-link mb-2" href="#settings">
                                 <i class="bi bi-gear"></i>
                                 <span>Settings</span>
                             </a>
                             <a class="nav-link mb-2" href="{% url 'password_change' %}">
                                 <i class="bi bi-key"></i>
                                 <span>Change Password</span>
-                            </a>
+                            </a> -->
                             <form method="post" action="{% url 'logout' %}">
                                 {% csrf_token %}
                                 <button type="submit" class="nav-link text-danger w-100">
