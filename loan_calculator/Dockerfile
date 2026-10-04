@@ -3,18 +3,18 @@ FROM python:3.11-slim
 
 # Prevent Python bytecode and buffering
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+  PYTHONUNBUFFERED=1
 
 # Install system dependencies for WeasyPrint & PostgreSQL
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpango-1.0-0 \
-    libharfbuzz0b \
-    libpangoft2-1.0-0 \
-    libffi-dev \
-    libpq-dev \
-    gcc \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+  libpango-1.0-0 \
+  libharfbuzz0b \
+  libpangoft2-1.0-0 \
+  libffi-dev \
+  libpq-dev \
+  gcc \
+  curl \
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 

@@ -3,25 +3,36 @@ global:
   evaluation_interval: 15s
 
 scrape_configs:
-  # 1. Prometheus Scraping Its Own Metrics
+  # 1. Prometheus Server Self-Monitoring
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
 
-  # 2. AI Vehicle Valuation Microservice (Port 5001)
+  # 2. Car Loan Django Web App (Live Render Deployment)
+  - job_name: 'carloan_web_app'
+    scheme: https
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['carloan-web.onrender.com']
+        labels:
+          environment: 'production'
+          platform: 'render'
+          app: 'carloan-web'
+
+  # 3. AI Vehicle Valuation Microservice (Port 5001)
   - job_name: 'ai_valuation_service'
     metrics_path: '/metrics'
     static_configs:
       - targets: ['host.docker.internal:5001']
+        labels:
+          environment: 'production'
+          service: 'ai-valuation'
 
-  # 3. PDF Generator Microservice (Port 5002)
+  # 4. PDF Generator Microservice (Port 5002)
   - job_name: 'pdf_service'
     metrics_path: '/metrics'
     static_configs:
       - targets: ['host.docker.internal:5002']
-
-  # 4. Django Web Gateway Application (Port 8000)
-  - job_name: 'carloan_web_app'
-    metrics_path: '/metrics'
-    static_configs:
-      - targets: ['host.docker.internal:8000']
+        labels:
+          environment: 'production'
+          service: 'pdf-service'
