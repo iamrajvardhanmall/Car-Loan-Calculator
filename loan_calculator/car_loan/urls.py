@@ -5,7 +5,7 @@ app_name = 'car_loan'
 
 urlpatterns = [
     path('metrics', views.metrics_view, name='metrics'),
-    path('', views.home_view, name='home'),  # Root URL now points to home_view
+    path('', views.about_view, name='home'),
     path('calculator/', views.calculator_view, name='calculator'),
     path('saved/', views.SavedCalculationsView.as_view(), name='saved_calculations'),
     path('delete/<int:pk>/', views.delete_calculation, name='delete_calculation'),
@@ -13,6 +13,7 @@ urlpatterns = [
     path('result/', views.result_view, name='result'),
     path('download_pdf/', views.download_pdf, name='download_pdf'),
     path('signup/', views.signup_view, name='signup'),
+    path('guide/', views.guide_view, name='guide'),
     path('about/', views.about_view, name='about'),
     path('save-calculation/', views.save_calculation, name='save_calculation'),
     path('compare-loans/', views.compare_loans_view, name='compare_loans'),

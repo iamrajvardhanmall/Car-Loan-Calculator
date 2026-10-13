@@ -1,0 +1,158 @@
+{% extends 'car_loan/base.html' %}
+{% load static %}
+
+{% block title %}User Guide - Auto Concept{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'car_loan/css/guide.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="guide-page">
+    <section class="guide-hero text-center">
+        <span class="guide-eyebrow">Auto Concept User Guide</span>
+        <h1>Plan your car finance with confidence</h1>
+        <p>
+            This guide explains what each tool does, what the terminology means, and how to use your results
+            responsibly.
+        </p>
+        <div class="guide-actions">
+            {% if user.is_authenticated %}
+            <a class="btn btn-primary" href="{% url 'car_loan:calculator' %}">
+                <i class="bi bi-speedometer2 me-2"></i>Go to dashboard
+            </a>
+            {% else %}
+            <a class="btn btn-primary" href="{% url 'login' %}">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Log in to get started
+            </a>
+            {% endif %}
+            <a class="btn btn-outline-primary" href="#terminology">View terminology</a>
+        </div>
+    </section>
+
+    <section class="guide-section" id="quick-start">
+        <div class="section-heading">
+            <span class="guide-eyebrow">Quick start</span>
+            <h2>How to use Auto Concept</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="guide-step">
+                    <span class="guide-step-number">1</span>
+                    <h3>Sign up or log in</h3>
+                    <p>Create an account to use the calculator, save calculations, compare loans, and use the valuation and budget tools.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="guide-step">
+                    <span class="guide-step-number">2</span>
+                    <h3>Enter realistic details</h3>
+                    <p>Use the vehicle price, down payment, loan term, interest rate, and monthly costs from your situation or lender quote.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="guide-step">
+                    <span class="guide-step-number">3</span>
+                    <h3>Compare before deciding</h3>
+                    <p>Review monthly payment, total repayment, interest, and affordability. Save useful scenarios and verify final terms with your lender.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="guide-section" id="tools">
+        <div class="section-heading">
+            <span class="guide-eyebrow">Your toolkit</span>
+            <h2>What each feature does</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <article class="guide-card">
+                    <i class="bi bi-calculator"></i>
+                    <h3>Dashboard / Loan Calculator</h3>
+                    <p>Estimate monthly payment and total cost using vehicle price, loan terms, and optional ownership costs such as insurance, fuel, maintenance, and warranty.</p>
+                </article>
+            </div>
+            <div class="col-md-6">
+                <article class="guide-card">
+                    <i class="bi bi-bookmark"></i>
+                    <h3>Saved Calculations</h3>
+                    <p>Save a scenario to your account so you can return to it while comparing vehicles, rates, or down-payment amounts.</p>
+                </article>
+            </div>
+            <div class="col-md-6">
+                <article class="guide-card">
+                    <i class="bi bi-bar-chart"></i>
+                    <h3>Compare Loans</h3>
+                    <p>Create multiple loan scenarios and compare monthly payments and overall costs. Do not focus only on the lowest monthly payment.</p>
+                </article>
+            </div>
+            <div class="col-md-6">
+                <article class="guide-card">
+                    <i class="bi bi-car-front"></i>
+                    <h3>Value Estimator</h3>
+                    <p>Enter make, model, year, mileage, condition, and location for an indicative vehicle-value estimate. It is not a guaranteed market or trade-in price.</p>
+                </article>
+            </div>
+            <div class="col-md-6">
+                <article class="guide-card">
+                    <i class="bi bi-wallet2"></i>
+                    <h3>Budget Analyzer</h3>
+                    <p>Review income, existing debts, and expenses to understand how a potential payment may fit within your monthly budget.</p>
+                </article>
+            </div>
+            <div class="col-md-6">
+                <article class="guide-card">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                    <h3>Results and PDF summary</h3>
+                    <p>Review the result summary and download a PDF when you need a convenient record for your own planning.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="guide-section" id="terminology">
+        <div class="section-heading">
+            <span class="guide-eyebrow">Plain-language glossary</span>
+            <h2>Important terminology</h2>
+            <p>These definitions explain the labels used throughout the app.</p>
+        </div>
+        <div class="terminology-list">
+            <div class="term-item"><h3>Vehicle price</h3><p>The listed or agreed purchase price before financing costs and other fees.</p></div>
+            <div class="term-item"><h3>Down payment</h3><p>The amount paid upfront. A larger down payment usually reduces the amount borrowed.</p></div>
+            <div class="term-item"><h3>Trade-in value</h3><p>The estimated value of a vehicle given to the dealer, which may reduce the amount financed.</p></div>
+            <div class="term-item"><h3>Loan amount / principal</h3><p>The amount borrowed after relevant upfront contributions and adjustments.</p></div>
+            <div class="term-item"><h3>Loan term</h3><p>The length of the loan in months. A longer term can lower the monthly payment but increase total interest.</p></div>
+            <div class="term-item"><h3>Interest rate</h3><p>The annual percentage charged by the lender for borrowing money.</p></div>
+            <div class="term-item"><h3>Monthly payment</h3><p>The estimated regular payment toward the loan, excluding ownership costs you have not entered.</p></div>
+            <div class="term-item"><h3>Total repayment</h3><p>The estimated amount paid over the full term, including principal and calculated interest.</p></div>
+            <div class="term-item"><h3>Total interest</h3><p>The estimated cost of borrowing over the loan term, separate from the amount borrowed.</p></div>
+            <div class="term-item"><h3>Sales tax</h3><p>A tax applied to the purchase, entered as a percentage. Actual rules depend on location.</p></div>
+            <div class="term-item"><h3>Documentation and registration fees</h3><p>Charges for processing paperwork and registering the vehicle. Confirm actual values with the seller or authority.</p></div>
+            <div class="term-item"><h3>Loan origination fee</h3><p>A charge for arranging the loan, commonly entered as a percentage or included in financing costs.</p></div>
+            <div class="term-item"><h3>Credit score</h3><p>A number lenders use to assess credit risk. It does not determine approval inside this app.</p></div>
+            <div class="term-item"><h3>Debt-to-income ratio (DTI)</h3><p>The share of monthly income used for debt payments. A lower DTI generally leaves more room in a budget.</p></div>
+            <div class="term-item"><h3>Mileage and condition</h3><p>Vehicle inputs used by the value estimator. Market prices can still vary significantly.</p></div>
+        </div>
+    </section>
+
+    <section class="guide-section guide-warning">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-2 text-center"><i class="bi bi-exclamation-triangle"></i></div>
+            <div class="col-lg-10">
+                <h2>Important reminder</h2>
+                <p class="mb-0">Auto Concept provides estimates for planning and education. It does not approve loans, guarantee vehicle values, or replace qualified financial advice. Confirm rates, taxes, fees, insurance, and final loan documents with the relevant provider.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="guide-section guide-help text-center">
+        <h2>Need more help?</h2>
+        <p>Visit the About page to contact us with a question about the app or your calculation.</p>
+        <a class="btn btn-primary"
+            href="mailto:rajvardhanmall@gmail.com?subject=Auto%20Concept%20Support%20Request&body=Hello%20Auto%20Concept%20team%2C%0A%0AI%20need%20help%20with%3A%0A">
+            <i class="bi bi-envelope me-2"></i>Contact Auto Concept
+        </a>
+    </section>
+</div>
+{% endblock %}

@@ -12,6 +12,10 @@ from .models import LoanCalculation, SavedCalculation, LoanComparison, EarlyPayo
 from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.core.mail import EmailMessage
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+from smtplib import SMTPException
 from django.views.decorators.csrf import csrf_protect
 from urllib import error as urllib_error
 from urllib import request as urllib_request
@@ -43,6 +47,10 @@ def signup_view(request):
 def home_view(request):
     """Redirect to login page"""
     return redirect('login')
+
+def guide_view(request):
+    """Display the public guide for using Auto Concept."""
+    return render(request, 'car_loan/guide.html')
 
 @login_required
 def calculator_view(request):
@@ -838,15 +846,55 @@ def about_view(request):
         email = request.POST.get('email', '').strip()
         message = request.POST.get('message', '').strip()
 
-        if name and email and message:
-            ContactQuery.objects.create(
-                name=name,
-                email=email,
-                message=message
-            )
-            messages.success(request, "Query has been submitted")
-        else:
+        if not name or not email or not message:
             messages.error(request, "Please fill out all fields in the contact form.")
+            return redirect('car_loan:about')
+
+        try:
+            validate_email(email)
+        except ValidationError:
+            messages.error(request, "Please enter a valid email address.")
+            return redirect('car_loan:about')
+
+        if len(name) > 100 or len(message) > 5000:
+            messages.error(request, "Your message is too long. Please shorten it and try again.")
+            return redirect('car_loan:about')
+
+        contact_query = ContactQuery.objects.create(
+            name=name,
+            email=email,
+            message=message
+        )
+        try:
+            if not settings.DEFAULT_FROM_EMAIL:
+                raise ValueError("DEFAULT_FROM_EMAIL is not configured")
+            if not settings.CONTACT_RECIPIENT_EMAIL:
+                raise ValueError("CONTACT_RECIPIENT_EMAIL is not configured")
+            EmailMessage(
+                subject=f"New contact message from {name}",
+                body=(
+                    f"Name: {name}\n"
+                    f"Email: {email}\n\n"
+                    f"Message:\n{message}"
+                ),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[settings.CONTACT_RECIPIENT_EMAIL],
+                reply_to=[email],
+            ).send(fail_silently=False)
+        except (SMTPException, OSError, ValueError) as exc:
+            logger.error(
+                "Unable to send contact query email for query %s: %s",
+                contact_query.pk,
+                exc,
+                exc_info=True,
+            )
+            messages.error(
+                request,
+                "Your message was saved, but we could not send the email. "
+                "Please try again later.",
+            )
+        else:
+            messages.success(request, "Your message has been sent successfully.")
 
         return redirect('car_loan:about')
 

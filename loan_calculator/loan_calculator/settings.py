@@ -17,7 +17,8 @@ import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(BASE_DIR / '.env')
+load_dotenv(BASE_DIR.parent / '.env')
+load_dotenv(BASE_DIR / '.env', override=False)
 
 
 # Quick-start development settings - unsuitable for production
@@ -166,7 +167,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Authentication settings
 LOGIN_REDIRECT_URL = 'car_loan:calculator'  # Redirect to calculator after login
-LOGOUT_REDIRECT_URL = 'login'  # Redirect to login page after logout
+LOGOUT_REDIRECT_URL = 'car_loan:home'  # Redirect to the public home page after logout
 
 # Add at the bottom
 LOAN_RATE_API_URL = "https://api.example.com/interest-rates"  # Replace with actual API URL
@@ -178,6 +179,23 @@ GOOGLE_GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models
 # Microservices Endpoints
 VALUATION_SERVICE_URL = os.getenv('VALUATION_SERVICE_URL', '')
 PDF_SERVICE_URL = os.getenv('PDF_SERVICE_URL', '')
+
+# Contact form email delivery
+EMAIL_BACKEND = os.getenv(
+    'EMAIL_BACKEND',
+    'django.core.mail.backends.smtp.EmailBackend',
+)
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True').lower() in ('true', '1', 't')
+EMAIL_TIMEOUT = int(os.getenv('EMAIL_TIMEOUT', '10'))
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
+CONTACT_RECIPIENT_EMAIL = os.getenv(
+    'CONTACT_RECIPIENT_EMAIL',
+    'rajvardhanmall@gmail.com',
+)
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',

@@ -42,7 +42,7 @@
     <header>
         <nav class="navbar navbar-expand-lg">
             <div class="container">
-                <a class="navbar-brand" href="{% url 'car_loan:calculator' %}">
+                <a class="navbar-brand" href="{% url 'car_loan:home' %}">
                     <img src="{% static 'car_loan/images/Car logo.jpeg' %}" alt="Car Loan Calculator Logo" width="50"
                         height="50" class="d-inline-block align-text-top">
                     Auto Concept
@@ -69,18 +69,6 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#settings">
-                                    <i class="bi bi-gear"></i>
-                                    <span>Settings</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{% url 'password_change' %}">
-                                    <i class="bi bi-key"></i>
-                                    <span>Change Password</span>
-                                </a>
-                            </li>
-                            <li>
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
@@ -96,6 +84,10 @@
                     </div>
                     {% else %}
                     <div class="auth-buttons d-none d-lg-flex">
+                        <a href="{% url 'car_loan:guide' %}" class="btn btn-guide">
+                            <i class="bi bi-journal-text"></i>
+                            <span>Guide</span>
+                        </a>
                         <a href="{% url 'login' %}" class="btn btn-login">
                             <i class="bi bi-box-arrow-in-right"></i>
                             <span>Login</span>
@@ -107,6 +99,13 @@
                     </div>
                     {% endif %}
 
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'car_loan:guide' %}" class="btn btn-guide d-none d-lg-inline-flex">
+                        <i class="bi bi-journal-text"></i>
+                        <span>Guide</span>
+                    </a>
+                    {% endif %}
+
                     <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarNav">
                         <i class="bi bi-list"></i>
@@ -115,6 +114,7 @@
 
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav mx-auto">
+                        {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.view_name == 'car_loan:calculator' %}active{% endif %}"
                                 href="{% url 'car_loan:calculator' %}">
@@ -122,7 +122,6 @@
                                 <span>Dashboard</span>
                             </a>
                         </li>
-                        {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.view_name == 'car_loan:saved_calculations' %}active{% endif %}"
                                 href="{% url 'car_loan:saved_calculations' %}">
@@ -137,7 +136,6 @@
                                 <span>Compare Loans</span>
                             </a>
                         </li>
-                        {% endif %}
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'value_estimator' %}active{% endif %}"
                                 href="{% url 'car_loan:value_estimator' %}">
@@ -145,6 +143,7 @@
                                 <span>Value Estimator</span>
                             </a>
                         </li>
+                        {% endif %}
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.view_name == 'car_loan:about' %}active{% endif %}"
                                 href="{% url 'car_loan:about' %}">
@@ -186,6 +185,10 @@
                         </div>
                         {% else %}
                         <div class="auth-buttons">
+                            <a href="{% url 'car_loan:guide' %}" class="btn btn-guide">
+                                <i class="bi bi-journal-text"></i>
+                                <span>Guide</span>
+                            </a>
                             <a href="{% url 'login' %}" class="btn btn-login">
                                 <i class="bi bi-box-arrow-in-right"></i>
                                 <span>Login</span>
@@ -229,6 +232,7 @@
                 <div class="col-md-4 mb-4">
                     <h5>Quick Links</h5>
                     <ul class="footer-links">
+                        {% if user.is_authenticated %}
                         <li>
                             <a href="{% url 'car_loan:calculator' %}">
                                 <i class="bi bi-calculator"></i>Loan Calculator
@@ -246,13 +250,14 @@
                             </a>
                         </li>
                         {% endif %}
+                        {% endif %}
                         <li>
-                            <a href="#">
+                            <a href="{% url 'car_loan:about' %}#privacy-policy">
                                 <i class="bi bi-shield-check"></i>Privacy Policy
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="{% url 'car_loan:about' %}#terms-of-service">
                                 <i class="bi bi-file-text"></i>Terms of Service
                             </a>
                         </li>
@@ -264,11 +269,6 @@
                         <li>
                             <a href="mailto:support@aicarloancalculator.com">
                                 <i class="bi bi-envelope"></i>rajvardhanmall@gmail.com
-                            </a>
-                        </li>
-                        <li>
-                            <a href="tel:1-800-CAR-LOAN">
-                                <i class="bi bi-telephone"></i>+91 8423510751
                             </a>
                         </li>
                     </ul>
@@ -283,7 +283,7 @@
             </div>
             <div class="footer-bottom">
                 <p>&copy; {% now "Y" %} AI Car Loan Calculator. All rights reserved.</p>
-                <p class="small text-white-50">Rates and calculations are estimates only. Actual terms may vary.</p>
+                <p class="small text-white-50">**Rates and calculations are estimates only. Actual terms may vary.**</p>
             </div>
         </div>
     </footer>

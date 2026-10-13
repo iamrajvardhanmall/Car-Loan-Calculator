@@ -16,7 +16,7 @@ urlpatterns = [
     
     path('logout/', csrf_protect(auth_views.LogoutView.as_view(
         template_name='registration/logged_out.html',
-        next_page='login'
+        next_page='car_loan:home'
     )), name='logout'),
     
     path('password_change/', auth_views.PasswordChangeView.as_view(

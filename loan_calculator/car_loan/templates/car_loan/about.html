@@ -9,60 +9,78 @@
 
 {% block content %}
 <div class="about-page">
-    <!-- Hero Section -->
-    {% comment %} <section class="hero-section text-center py-5 mb-5">
+    <section class="hero-section text-center mb-5">
         <div class="hero-content">
-            <span class="badge bg-primary-soft mb-3">About Us</span>
-            <h1 class="display-4 mb-4 fw-bold">Revolutionizing Car Financing with AI</h1>
-            <p class="lead text-muted mx-auto">We're combining artificial intelligence with
-                financial expertise to make car loan decisions simpler and smarter.</p>
+            <span class="badge bg-primary-soft mb-3">About Auto Concept</span>
+            <h1 class="display-4 mb-4 fw-bold">Make smarter car-financing decisions</h1>
+            <p class="lead text-muted mx-auto">
+                Auto Concept brings loan calculations, affordability planning, vehicle valuation, and comparison tools
+                together in one simple platform.
+            </p>
+            <p class="text-muted mx-auto about-hero-detail">
+                Whether you are buying your first car, comparing financing options, or reviewing an existing plan,
+                our tools help you understand the numbers before you commit.
+            </p>
             <div class="stats-row mt-5">
                 <div class="stat-item">
-                    <h3 class="stat-number">10K+</h3>
-                    <p class="stat-label">Happy Users</p>
+                    <h3 class="stat-number">01</h3>
+                    <p class="stat-label">Plan your budget</p>
                 </div>
                 <div class="stat-item">
-                    <h3 class="stat-number">95%</h3>
-                    <p class="stat-label">Accuracy Rate</p>
+                    <h3 class="stat-number">02</h3>
+                    <p class="stat-label">Compare your options</p>
                 </div>
                 <div class="stat-item">
-                    <h3 class="stat-number">24/7</h3>
-                    <p class="stat-label">AI Support</p>
+                    <h3 class="stat-number">03</h3>
+                    <p class="stat-label">Choose with confidence</p>
                 </div>
             </div>
         </div>
-    </section> {% endcomment %}
+    </section>
 
-    <!-- Mission Section -->
     <section class="mission-section mb-5">
-        <div class="row align-items-center">
-            <div class="col-lg-6 mb-4 mb-lg-0">
-                <h2 class="mb-4">Our Mission</h2>
-                <p class="lead">We're on a mission to make car financing decisions easier and more transparent for
-                    everyone.</p>
-                <p>Using advanced AI technology, we provide accurate loan calculations and personalized recommendations
-                    to help you make informed decisions about your car purchase.</p>
+        <div class="row align-items-center g-4">
+            <div class="col-lg-6">
+                <span class="section-eyebrow">Our mission</span>
+                <h2 class="mb-4">Making car finance easier to understand</h2>
+                <p class="lead">
+                    Car financing can feel complicated when interest rates, fees, down payments, and monthly budgets
+                    are spread across different tools.
+                </p>
+                <p>
+                    Auto Concept is designed to make those decisions clearer. Enter your vehicle and loan details,
+                    review the estimated monthly cost, and explore how different terms can affect your overall payment.
+                    The platform gives you a practical starting point for conversations with lenders and dealerships.
+                </p>
+                <p class="mb-0">
+                    Our calculations are estimates for planning and education. Always confirm final rates, fees, and
+                    loan terms directly with your lender before making a financial decision.
+                </p>
             </div>
             <div class="col-lg-6">
                 <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body p-4">
-                        <h3 class="h5 mb-4">Why Choose Us?</h3>
-                        <ul class="list-unstyled">
-                            <li class="mb-3">
-                                <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                Accurate AI-powered calculations
+                    <div class="card-body p-4 p-lg-5">
+                        <h3 class="h4 mb-4">Why choose Auto Concept?</h3>
+                        <ul class="list-unstyled about-check-list mb-0">
+                            <li>
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                Clear estimates based on the details you provide
                             </li>
-                            <li class="mb-3">
-                                <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                Personalized recommendations
+                            <li>
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                Tools for payments, affordability, comparisons, and valuation
                             </li>
-                            <li class="mb-3">
-                                <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                User-friendly interface
+                            <li>
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                Save calculations so you can review them later
                             </li>
-                            <li class="mb-3">
-                                <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                Secure data handling
+                            <li>
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                A simple interface that works on desktop and mobile
+                            </li>
+                            <li>
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                Support available when you need help
                             </li>
                         </ul>
                     </div>
@@ -71,56 +89,163 @@
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="features-section mb-5">
-        <h2 class="text-center mb-5">What We Offer</h2>
+    <section class="process-section mb-5">
+        <div class="text-center section-heading">
+            <span class="section-eyebrow">How it works</span>
+            <h2>From questions to a clearer plan</h2>
+            <p class="text-muted">Use the platform in a few straightforward steps.</p>
+        </div>
         <div class="row g-4">
-            <div class="col-md-6 col-lg-3">
+            <div class="col-md-4">
+                <div class="process-card">
+                    <span class="process-number">1</span>
+                    <h3 class="h5">Add your details</h3>
+                    <p class="text-muted mb-0">
+                        Enter the vehicle price, down payment, loan term, interest rate, and other costs relevant to
+                        your situation.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="process-card">
+                    <span class="process-number">2</span>
+                    <h3 class="h5">Explore scenarios</h3>
+                    <p class="text-muted mb-0">
+                        Adjust the inputs and compare payment amounts, total costs, affordability, and potential
+                        savings across different options.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="process-card">
+                    <span class="process-number">3</span>
+                    <h3 class="h5">Save and decide</h3>
+                    <p class="text-muted mb-0">
+                        Save useful calculations, revisit them later, and use the results to prepare better questions
+                        for your lender.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features-section mb-5">
+        <div class="text-center section-heading">
+            <span class="section-eyebrow">Explore the platform</span>
+            <h2>Tools built for the full car-buying journey</h2>
+            <p class="text-muted">Everything is organized around practical decisions you may need to make.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
                 <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center p-4">
+                    <div class="card-body p-4">
                         <i class="bi bi-calculator display-4 text-primary mb-3"></i>
                         <h3 class="h5">Loan Calculator</h3>
-                        <p class="text-muted">Advanced calculator with AI-powered insights for accurate loan estimates.
+                        <p class="text-muted mb-0">
+                            Estimate monthly payments, total repayment, and interest so you can understand the cost of
+                            a proposed loan.
                         </p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3">
+            <div class="col-md-6 col-lg-4">
                 <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <i class="bi bi-graph-up display-4 text-primary mb-3"></i>
-                        <h3 class="h5">Market Analysis</h3>
-                        <p class="text-muted">Real-time market data and trend analysis for better decisions.</p>
+                    <div class="card-body p-4">
+                        <i class="bi bi-bar-chart display-4 text-primary mb-3"></i>
+                        <h3 class="h5">Compare Loans</h3>
+                        <p class="text-muted mb-0">
+                            Place different loan scenarios side by side and see how term length, rates, and upfront
+                            costs change the outcome.
+                        </p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3">
+            <div class="col-md-6 col-lg-4">
                 <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <i class="bi bi-shield-check display-4 text-primary mb-3"></i>
-                        <h3 class="h5">Secure Platform</h3>
-                        <p class="text-muted">Your data is protected with industry-standard security measures.</p>
+                    <div class="card-body p-4">
+                        <i class="bi bi-wallet2 display-4 text-primary mb-3"></i>
+                        <h3 class="h5">Budget Analyzer</h3>
+                        <p class="text-muted mb-0">
+                            Review income, expenses, and existing debt to understand what monthly payment may fit your
+                            budget.
+                        </p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3">
+            <div class="col-md-6 col-lg-4">
                 <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <i class="bi bi-headset display-4 text-primary mb-3"></i>
-                        <h3 class="h5">Expert Support</h3>
-                        <p class="text-muted">Get assistance from our knowledgeable support team.</p>
+                    <div class="card-body p-4">
+                        <i class="bi bi-car-front display-4 text-primary mb-3"></i>
+                        <h3 class="h5">Value Estimator</h3>
+                        <p class="text-muted mb-0">
+                            Provide vehicle information and receive an estimate to help you think through a potential
+                            purchase or trade-in.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <i class="bi bi-bookmark-check display-4 text-primary mb-3"></i>
+                        <h3 class="h5">Saved Calculations</h3>
+                        <p class="text-muted mb-0">
+                            Keep important scenarios in one place so you can return to them while researching vehicles
+                            and financing.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <i class="bi bi-file-earmark-pdf display-4 text-primary mb-3"></i>
+                        <h3 class="h5">Useful Summaries</h3>
+                        <p class="text-muted mb-0">
+                            Review results in a structured format that makes it easier to understand and discuss your
+                            financing options.
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Team Section -->
+    <section class="trust-section mb-5">
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="trust-card h-100">
+                    <i class="bi bi-shield-check"></i>
+                    <h2 class="h4">Built with care</h2>
+                    <p class="mb-0">
+                        We aim to keep the experience focused, understandable, and useful. Your saved calculations are
+                        associated with your account, while the tools are designed to keep the inputs and results easy
+                        to review.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="trust-card h-100">
+                    <i class="bi bi-info-circle"></i>
+                    <h2 class="h4">Use estimates responsibly</h2>
+                    <p class="mb-0">
+                        Auto Concept does not approve loans or replace professional financial advice. Actual offers can
+                        vary by lender, credit profile, location, taxes, insurance, and fees. Verify every final figure
+                        before signing an agreement.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="team-section mb-5">
-        <h2 class="text-center mb-5">Developer</h2>
+        <div class="text-center section-heading">
+            <span class="section-eyebrow">The person behind the project</span>
+            <h2>Meet the developer</h2>
+        </div>
         <div class="container">
             <div class="row justify-content-center g-4">
-                <div class="col-md-4">
+                <div class="col-md-6 col-lg-4">
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body text-center p-4">
                             <div class="rounded-circle overflow-hidden mb-3 mx-auto">
@@ -128,7 +253,11 @@
                                     class="img-fluid">
                             </div>
                             <h3 class="h5">Rajvardhan Mall</h3>
-                            <p class="text-muted">Developer</p>
+                            <p class="text-muted mb-2">Developer</p>
+                            <p class="text-muted small mb-0">
+                                Building practical technology to make everyday financial planning clearer and more
+                                approachable.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -136,47 +265,108 @@
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section class="contact-section mb-5">
+    <section id="privacy-policy" class="policy-section mb-5" aria-labelledby="privacy-policy-title">
         <div class="card border-0 shadow-sm">
-            <div class="card-body p-4">
-                <div class="row">
-                    <div class="col-lg-6 mb-4 mb-lg-0">
-                        <h2 class="mb-4">Get in Touch</h2>
-                        <p>Have questions about our car loan calculator? We're here to help!</p>
-                        <ul class="list-unstyled">
-                            <li class="mb-3">
-                                <i class="bi bi-envelope me-2"></i>
-                                rajvardhanmall@gmail.com
-                            </li>
-                            <li class="mb-3">
-                                <i class="bi bi-telephone me-2"></i>
-                                +91 8423510751
-                            </li>
-                            
-                        </ul>
+            <div class="card-body p-4 p-lg-5">
+                <span class="section-eyebrow">Your privacy matters</span>
+                <h2 id="privacy-policy-title" class="mb-3">Privacy Policy</h2>
+                <p class="text-muted">
+                    We collect only the information needed to provide Auto Concept's features and respond to your
+                    questions. This may include account details, saved calculations, and the name, email address, and
+                    message you submit through the Get in Touch form.
+                </p>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <h3 class="h6">How we use information</h3>
+                        <p class="small text-muted mb-0">
+                            Information is used to provide calculations, save account activity, respond to support
+                            requests, and improve the service.
+                        </p>
                     </div>
-                    <div class="col-lg-6">
-                        <form method="post" action="{% url 'car_loan:about' %}">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="message" class="form-label">Message</label>
-                                <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Send Message</button>
-                        </form>
+                    <div class="col-md-4">
+                        <h3 class="h6">How we protect it</h3>
+                        <p class="small text-muted mb-0">
+                            We use account access controls and reasonable safeguards to help protect the information
+                            stored by the application.
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <h3 class="h6">Your choices</h3>
+                        <p class="small text-muted mb-0">
+                            To ask about, correct, or remove information you have submitted, contact us at
+                            <a href="mailto:rajvardhanmall@gmail.com">rajvardhanmall@gmail.com</a>.
+                        </p>
                     </div>
                 </div>
+                <p class="small text-muted mt-4 mb-0">
+                    Auto Concept does not sell personal information. Loan calculations and vehicle valuations are
+                    estimates and should be verified with the relevant lender or provider.
+                </p>
             </div>
         </div>
     </section>
+
+    <section id="terms-of-service" class="policy-section mb-5" aria-labelledby="terms-of-service-title">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4 p-lg-5">
+                <span class="section-eyebrow">Using Auto Concept</span>
+                <h2 id="terms-of-service-title" class="mb-3">Terms of Service</h2>
+                <p class="text-muted">
+                    By using Auto Concept, you agree to use the platform responsibly and to these terms. If you do not
+                    agree with them, please do not use the service.
+                </p>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h3 class="h6">Use of the service</h3>
+                        <p class="small text-muted mb-0">
+                            You may use Auto Concept for personal, lawful financial planning and educational purposes.
+                            Keep your account credentials private and provide accurate information when using the
+                            calculators and saved features.
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h3 class="h6">Estimates are not guarantees</h3>
+                        <p class="small text-muted mb-0">
+                            Calculations, affordability results, and vehicle valuations are estimates. They are not
+                            loan approvals, offers, financial advice, or guarantees of a lender's final terms.
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h3 class="h6">Your responsibilities</h3>
+                        <p class="small text-muted mb-0">
+                            Do not misuse the platform, attempt unauthorized access, submit harmful content, or use
+                            the service to violate any applicable law or another person's rights.
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h3 class="h6">Service availability</h3>
+                        <p class="small text-muted mb-0">
+                            We work to keep Auto Concept useful and available, but features may change, be temporarily
+                            unavailable, or contain errors. Always verify important figures independently.
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h3 class="h6">User content and messages</h3>
+                        <p class="small text-muted mb-0">
+                            You are responsible for the information you submit. By sending a support message, you
+                            authorize us to use it to respond to your request and provide support.
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h3 class="h6">Questions about these terms</h3>
+                        <p class="small text-muted mb-0">
+                            If you have questions about these Terms of Service, contact
+                            <a href="mailto:rajvardhanmall@gmail.com">rajvardhanmall@gmail.com</a>.
+                        </p>
+                    </div>
+                </div>
+                <p class="small text-muted mt-4 mb-0">
+                    These terms are provided as general information for this project and do not replace professional
+                    legal or financial advice.
+                </p>
+            </div>
+        </div>
+    </section>
+
 </div>
 {% endblock %}
