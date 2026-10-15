@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🚗 AI Car Loan Calculator
+# 🚗 Car Loan Calculator and Value Estimator
 
 ### Financial planning, vehicle valuation, PDF reporting, and cloud-native operations in one platform
 
