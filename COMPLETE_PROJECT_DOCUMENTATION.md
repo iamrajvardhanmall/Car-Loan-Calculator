@@ -8,7 +8,7 @@
 - **Repository:** [iamrajvardhanmall/Car-Loan-Calculator](https://github.com/iamrajvardhanmall/Car-Loan-Calculator.git)
 - **Live Production URL:** [https://carloan-web.onrender.com/](https://carloan-web.onrender.com/)
 - **Core Stacks:** Django 4.2 · FastAPI · Google Gemini 2.0 Flash · WeasyPrint 60.2 · PostgreSQL 15
-- **Cloud & DevOps:** Docker Compose · Kubernetes (HPA) · Terraform (AWS) · Prometheus · Grafana · GitHub CI/CD Webhooks
+- **Cloud & DevOps:** Docker Compose · Kubernetes (HPA) · Prometheus · Grafana
 
 ---
 
@@ -34,10 +34,8 @@
 7. [DevOps & Cloud-Native Infrastructure (The 6 Pillars)](#7-devops--cloud-native-infrastructure-the-6-pillars)
    - 7.1 Docker & Multi-Stage Containerization
    - 7.2 Kubernetes Orchestration & Horizontal Pod Autoscaling (HPA)
-   - 7.3 Infrastructure as Code via Terraform on AWS
    - 7.4 Time-Series Observability with Prometheus
    - 7.5 Real-Time Operational Dashboards with Grafana
-   - 7.6 Continuous Deployment via GitHub Webhooks
    - 7.7 Concurrent Traffic Generation & Stress Testing (`load_test.py`)
 8. [Configuration & Environment Variables Directory](#8-configuration--environment-variables-directory)
 9. [Deployment & Operations Runbook](#9-deployment--operations-runbook)
@@ -82,10 +80,6 @@ graph TD
         Grafana[Grafana Dashboard :3000] -->|Query| Prometheus
     end
 
-    subgraph Automated CI/CD
-        GitHubPush[GitHub Push Event] -->|HMAC-SHA256 :9000| WebhookServer[FastAPI Webhook Server]
-        WebhookServer -->|Git pull & docker compose up| DockerDaemon[Docker Host Engine]
-    end
 ```
 
 ### 2.2 Dual Operating Modes (Resilience Pattern)
@@ -348,13 +342,6 @@ Manifests located in [`k8s/`](file:///c:/Users/Lenovo/OneDrive/Music/CarLoanCalc
 - **PDF Service:** ClusterIP service on port `5002`, autoscales **1 to 4 pods** at 50% CPU.
 - **PostgreSQL:** Deployment with persistent volume claim on port `5432`.
 
-### 7.3 Infrastructure as Code via Terraform on AWS
-Located in [`terraform/`](file:///c:/Users/Lenovo/OneDrive/Music/CarLoanCalculator/CarLoan/terraform):
-- Provisions an **AWS Windows Server 2022 Base** instance (`t3.medium`, 40GB gp3 SSD).
-- Provisions Security Group firewall opening RDP (`3389`), WinRM (`5985`), HTTP (`80`), Web (`8000`), AI (`5001`), and PDF (`5002`).
-- Allocates and associates a static Elastic IP (EIP).
-- Automated startup provisioning via PowerShell user data script [user_data.ps1](file:///c:/Users/Lenovo/OneDrive/Music/CarLoanCalculator/CarLoan/terraform/user_data.ps1).
-
 ### 7.4 Time-Series Observability with Prometheus
 - Configured via [prometheus.yml](file:///c:/Users/Lenovo/OneDrive/Music/CarLoanCalculator/CarLoan/monitoring/prometheus.yml) on port `9090`.
 - Scrapes metrics every 15s from `carloan_web_app`, `ai_valuation_service`, and `pdf_service`.
@@ -370,14 +357,6 @@ Located in [`terraform/`](file:///c:/Users/Lenovo/OneDrive/Music/CarLoanCalculat
 - Runs on port `3000` via [docker-compose.monitoring.yml](file:///c:/Users/Lenovo/OneDrive/Music/CarLoanCalculator/CarLoan/monitoring/docker-compose.monitoring.yml).
 - Automatically provisions Prometheus data source and pre-built dashboard: [carloan_dashboard.json](file:///c:/Users/Lenovo/OneDrive/Music/CarLoanCalculator/CarLoan/monitoring/grafana/provisioning/dashboards/carloan_dashboard.json).
 - Displays real-time request rates, P95 latency distribution curves, and service health status gauges.
-
-### 7.6 Continuous Deployment via GitHub Webhooks
-- Handled by [webhook_server.py](file:///c:/Users/Lenovo/OneDrive/Music/CarLoanCalculator/CarLoan/webhook_server.py) listening on port `9000`.
-- Validates the `X-Hub-Signature-256` header using HMAC-SHA256 with `GITHUB_WEBHOOK_SECRET`.
-- When a push event is detected on branch `Raj` or `main`:
-  1. Executes `git pull origin <branch>`.
-  2. Executes `docker compose up -d --build`.
-  3. Achieves automated, hands-off redeployment in under 3 seconds.
 
 ### 7.7 Concurrent Traffic Generation & Stress Testing (`load_test.py`)
 - Python multi-threaded traffic generator [load_test.py](file:///c:/Users/Lenovo/OneDrive/Music/CarLoanCalculator/CarLoan/load_test.py).
@@ -408,7 +387,6 @@ Located in [`terraform/`](file:///c:/Users/Lenovo/OneDrive/Music/CarLoanCalculat
 | `PDF_SERVICE_URL` | Web App | URL to FastAPI PDF generator service | `http://pdf_service:5002/api/generate-pdf` |
 | `SOCIAL_AUTH_GOOGLE_OAUTH2_KEY` | Web App | Google OAuth2 Client ID | `*.apps.googleusercontent.com` |
 | `SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET`| Web App | Google OAuth2 Client Secret | Secret string |
-| `GITHUB_WEBHOOK_SECRET` | Webhook Server | Secret key matching GitHub Webhook settings | `my_secure_secret_123` |
 
 ---
 
@@ -444,13 +422,6 @@ Access points:
 - Prometheus: `http://localhost:9090`
 - Grafana: `http://localhost:3000` (User/Password: `admin` / `admin`)
 
-### Option 4: Cloud Infrastructure Deployment (Terraform AWS)
-```powershell
-cd CarLoan/terraform
-terraform init
-terraform plan
-terraform apply -auto-approve
-```
 
 ---
 
@@ -460,8 +431,7 @@ terraform apply -auto-approve
 2. **CSRF & Proxy Headers**:
    - `SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')` ensures secure cookie handling behind reverse proxies like Render or Nginx.
    - Django `@csrf_protect` applied on state-altering views.
-3. **Cryptographic Webhook Verification**: `webhook_server.py` evaluates incoming push notifications using constant-time comparison (`hmac.compare_digest`) against SHA256 hashes to prevent timing attacks.
-4. **Input Sanitization**: Numeric inputs across financial views pass through [validate_numeric_input](file:///c:/Users/Lenovo/OneDrive/Music/CarLoanCalculator/CarLoan/loan_calculator/car_loan/views.py#L127) with strict upper/lower clamping to prevent decimal division by zero or buffer overflows.
+3. **Input Sanitization**: Numeric inputs across financial views pass through [validate_numeric_input](file:///c:/Users/Lenovo/OneDrive/Music/CarLoanCalculator/CarLoan/loan_calculator/car_loan/views.py#L127) with strict upper/lower clamping to prevent decimal division by zero or buffer overflows.
 
 ---
 

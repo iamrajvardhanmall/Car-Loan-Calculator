@@ -17,8 +17,8 @@ import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(BASE_DIR.parent / '.env')
 load_dotenv(BASE_DIR / '.env', override=False)
+load_dotenv(BASE_DIR.parent / '.env', override=False)
 
 
 # Quick-start development settings - unsuitable for production

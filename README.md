@@ -72,8 +72,6 @@ graph TD
     Prometheus --> Valuation
     Prometheus --> PDF
     Grafana[Grafana :3000] --> Prometheus
-    GitHub[GitHub push] --> Webhook[Webhook server :9000]
-    Webhook --> Docker[Docker Compose deployment]
 ```
 
 The application supports two operating modes:
@@ -97,9 +95,7 @@ CarLoan/
 │   ├── docker-compose.monitoring.yml
 │   └── grafana/provisioning/
 ├── k8s/                                 # Kubernetes Deployments, Services, and HPAs
-├── terraform/                           # AWS Windows EC2 infrastructure
 ├── docker-compose.yml                   # Local four-service stack
-├── webhook_server.py                    # HMAC-verified GitHub deployment webhook
 ├── load_test.py                         # Concurrent traffic generator
 └── README.md
 ```
@@ -385,47 +381,6 @@ The configured HPA ranges are:
 
 See [`KUBERNETES_DEPLOYMENT_GUIDE.md`](./KUBERNETES_DEPLOYMENT_GUIDE.md) for Minikube and Docker Desktop instructions.
 
-## Terraform on AWS
-
-The [`terraform/`](./terraform/) configuration provisions a Windows Server 2022 EC2 host with:
-
-- A security group
-- A `t3.medium` instance by default
-- A 40 GB gp3 root volume
-- An Elastic IP
-- Bootstrap automation through [`user_data.ps1`](./terraform/user_data.ps1)
-
-The default security group is intentionally broad for demonstration and should be restricted to trusted CIDR ranges before production use, especially RDP (`3389`) and WinRM (`5985`).
-
-```powershell
-cd terraform
-terraform init
-terraform plan
-terraform apply
-```
-
-More details are in [`terraform/TERRAFORM_README.md`](./terraform/TERRAFORM_README.md).
-
-## Webhook deployment server
-
-[`webhook_server.py`](./webhook_server.py) provides a FastAPI GitHub push-webhook receiver on port `9000`.
-
-It:
-
-1. Validates `X-Hub-Signature-256` with HMAC-SHA256.
-2. Accepts pushes to the configured `Raj` or `main` branches.
-3. Runs `git pull`.
-4. Rebuilds and restarts the Docker Compose stack.
-
-Run it with:
-
-```powershell
-$env:GITHUB_WEBHOOK_SECRET = "replace-with-a-long-random-secret"
-python webhook_server.py
-```
-
-Do not expose the webhook server publicly without a strong secret, network controls, and a deployment environment dedicated to this purpose.
-
 ## Load testing
 
 [`load_test.py`](./load_test.py) generates concurrent requests for local or Kubernetes testing:
@@ -438,11 +393,10 @@ Use it with `kubectl get hpa -w` to observe autoscaling behavior. Do not run loa
 
 ## Security and production notes
 
-- Keep `.env` files, API keys, OAuth secrets, database passwords, and webhook secrets out of version control.
+- Keep `.env` files, API keys, OAuth secrets, and database passwords out of version control.
 - Use `DEBUG=False` in production.
 - Set `ALLOWED_HOSTS` and `CSRF_TRUSTED_ORIGINS` to exact production values.
 - Use HTTPS for all public services and OAuth redirect URLs.
-- Restrict Terraform security-group ingress instead of allowing `0.0.0.0/0`.
 - Use a production WSGI server such as Gunicorn rather than Django `runserver`.
 - Run migrations during deployment before serving traffic.
 - Configure persistent database storage and backups for production data.
@@ -467,7 +421,6 @@ The current project passes Django system checks.
 - [DevOps and microservices guide](./DEVOPS_MICROSERVICES_GUIDE.md)
 - [DevOps audit report](./DEVOPS_AUDIT_REPORT.md)
 - [Render monitoring guide](./monitoring/RENDER_MONITORING_GUIDE.md)
-- [Terraform guide](./terraform/TERRAFORM_README.md)
 
 ## License
 
